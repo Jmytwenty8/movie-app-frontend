@@ -64,6 +64,9 @@ const Movie = () => {
           marginTop: 10,
           marginLeft: 10,
           marginBottom: 10,
+          ":hover": {
+            boxShadow: "10px 10px 20px #ccc",
+          },
         }}
       >
         <CardMedia
@@ -139,11 +142,14 @@ const Movie = () => {
                 width: `calc(800px - (2 * 16px))`,
                 height: `calc(150px - (2 * 16px))`,
                 [`@media (max-width: 768px)`]: {
-                  width: "100%",
-                  height: "100vh",
+                  width: "80%",
+                  height: "30vh",
                 },
                 margin: 2,
                 marginTop: 0,
+                ":hover": {
+                  boxShadow: "10px 10px 20px #ccc",
+                },
               }}
             >
               <Stack direction={"row"}>
