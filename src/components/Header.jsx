@@ -24,12 +24,13 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const user = useSelector((state) => state.user.currentUser);
-
-  const isLoggedIn = !!user;
+  let user = useSelector((state) => state.user.currentUser);
+  if (user && typeof user === "string") {
+    user = JSON.parse(user);
+  }
+  let isLoggedIn = !!user;
 
   const handleLogout = () => {
-    console.log("logged out");
     Cookies.remove("auth");
     dispatch(userActions.logout());
     setTabValue(0);
@@ -105,12 +106,12 @@ const Header = () => {
             >
               <MenuItem onClick={handleDashboardClose}>Profile</MenuItem>
               <MenuItem onClick={handleDashboardClose}>My Bookings</MenuItem>
-              {user && user.role === "admin" && (
+              {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>
                   Modify Movies
                 </MenuItem>
               )}
-              {user && user.role === "admin" && (
+              {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem
                   onClick={handleDashboardClose}
                   component={Link}
@@ -119,10 +120,10 @@ const Header = () => {
                   Modify Theaters
                 </MenuItem>
               )}
-              {user && user.role === "admin" && (
+              {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>Modify Shows</MenuItem>
               )}
-              {user && user.role === "admin" && (
+              {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>Modify Seats</MenuItem>
               )}
               <MenuItem onClick={handleLogout}>Logout</MenuItem>

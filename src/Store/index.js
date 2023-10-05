@@ -3,14 +3,16 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    currentUser: null,
+    currentUser: localStorage.getItem("user"),
   },
   reducers: {
     login: (state, action) => {
+      localStorage.setItem("user", JSON.stringify(action.payload));
       state.currentUser = action.payload;
     },
     logout: (state) => {
       state.currentUser = null;
+      localStorage.removeItem("user");
     },
   },
 });
