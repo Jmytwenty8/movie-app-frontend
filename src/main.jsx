@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "./Store";
 import Movie from "./components/Movie";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Booking from "./components/Booking";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -34,6 +35,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/movie/:id",
         element: <Movie />,
+      },
+      {
+        path: "/booking",
+        element: <Booking />,
       },
     ],
   },

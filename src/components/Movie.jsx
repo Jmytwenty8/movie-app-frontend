@@ -13,31 +13,20 @@ import {
 import MovieFilterTwoToneIcon from "@mui/icons-material/MovieFilterTwoTone";
 import SupervisorAccountTwoToneIcon from "@mui/icons-material/SupervisorAccountTwoTone";
 import TheatersTwoToneIcon from "@mui/icons-material/TheatersTwoTone";
+import { getTheaterById } from "../helpers/apiHelpers";
 import { Link } from "react-router-dom";
 
 const Movie = () => {
-  const id = useParams().id;
+  const movieId = useParams().id;
   const [movieData, setMovieData] = useState({});
   const [theatersData, setTheatersData] = useState([]);
 
   const fetchMovieDetails = async () => {
-    const url = baseUrl + `/api/movie/${id}`;
+    const url = baseUrl + `/api/movie/${movieId}`;
     const response = await axios.get(url);
     setMovieData(response.data.data);
   };
 
-  const getTheaterById = async (id) => {
-    const response = await axios.post(
-      baseUrl + "/api/theater/inquiry",
-      {
-        id: id,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data.data;
-  };
   useEffect(() => {
     fetchMovieDetails();
   }, []);
@@ -154,13 +143,19 @@ const Movie = () => {
             >
               <Stack direction={"row"}>
                 <Stack direction={"column"}>
-                  <Typography variant='h5' margin={1} marginBottom={0}>
+                  <Typography
+                    variant='h5'
+                    margin={1}
+                    marginLeft={2}
+                    marginBottom={0}
+                  >
                     {theater.name}
                   </Typography>
                   <Typography
                     variant='subtitle1'
                     margin={1}
                     marginBottom={0}
+                    marginLeft={2}
                     marginTop={0}
                   >
                     {theater.location}
@@ -169,12 +164,18 @@ const Movie = () => {
                     variant='body1'
                     margin={1}
                     marginBottom={0}
+                    marginLeft={2}
                     marginTop={0}
                   >
                     <b>Rs. {theater.price}</b>
                   </Typography>
-                  <Typography variant='body2' margin={1} marginTop={0}>
-                    {theater.showtime.toUpperCase()}
+                  <Typography
+                    variant='body2'
+                    margin={1}
+                    marginLeft={2}
+                    marginTop={0}
+                  >
+                    <b>Timing: {theater.showtime.toUpperCase()}</b>
                   </Typography>
                 </Stack>
                 <Button
@@ -189,6 +190,12 @@ const Movie = () => {
                   }}
                   size='small'
                   component={Link}
+                  state={{
+                    theaterId: theater._id,
+                    showtime: theater.showtime,
+                    movieId: movieData._id,
+                  }}
+                  to={"/booking"}
                 >
                   Book
                 </Button>

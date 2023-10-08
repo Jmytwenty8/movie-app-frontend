@@ -13,3 +13,25 @@ export const getMovies = async () => {
   const response = await axios.get(baseUrl + "/api/movie");
   return response.data;
 };
+
+export const getTheaterById = async (theaterId) => {
+  const response = await axios.post(
+    baseUrl + "/api/theater/inquiry",
+    {
+      id: theaterId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data.data;
+};
+
+export const getSeatDetails = async (id) => {
+  const detail = await axios.post(
+    baseUrl + "/api/seat/inquiry",
+    { id: id },
+    { withCredentials: true }
+  );
+  return detail;
+};
