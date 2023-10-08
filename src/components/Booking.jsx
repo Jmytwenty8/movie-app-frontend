@@ -3,10 +3,12 @@ import { useLocation } from "react-router-dom";
 import { baseUrl } from "../main";
 import { useEffect, useState, useMemo } from "react";
 import { Stack, Button, Box, Card, Grid } from "@mui/material";
-import { getTheaterById, getSeatDetails } from "../helpers/apiHelpers";
+import { getTheaterById } from "../helpers/apiHelpers";
 import TheaterScreen from "./TheaterScreen";
+import { useNavigate } from "react-router-dom";
 
 const Booking = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
   const [vacantSeats, setVacantSeats] = useState([]);
@@ -53,6 +55,25 @@ const Booking = () => {
     return selectedSeats.includes(seat);
   };
 
+  const handleBooking = async () => {
+    const seats = selectedSeats.map((seat) => {
+      let seatNumber = "";
+      seatNumber = seatNumber.concat(seat.row).concat(seat.column);
+      return seatNumber;
+    });
+    data.seats = seats;
+    try {
+      const response = await axios.post(baseUrl + "/api/booking/create", data, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        navigate("/movieSuccess", { state: { data } });
+      }
+    } catch (err) {
+      navigate("/error", { state: { error: err.response.data.message } });
+    }
+  };
+
   useEffect(() => {
     getVacantSeats();
     getTheaterById(data.theaterId).then((res) => {
@@ -79,7 +100,6 @@ const Booking = () => {
       }}
     >
       <Grid
-        direction='column'
         justifyContent='space-between'
         sx={{
           height: "100%",
@@ -155,20 +175,34 @@ const Booking = () => {
             </Box>
           </Stack>
         </Grid>
-        <Grid item>
+        <Stack direction={"row"}>
           <Button
             variant='contained'
             sx={{
               position: "absolute",
-              left: 0,
-              right: 0,
-              margin: 100,
+              margin: 40,
               marginTop: -30,
             }}
+            size='large'
+            onClick={handleBooking}
           >
             Book {selectedSeats.length > 0 ? selectedSeats.length : ""}
           </Button>
-        </Grid>
+          <Button
+            variant='contained'
+            sx={{
+              position: "absolute",
+              margin: 60,
+              marginTop: -30,
+            }}
+            size='large'
+            onClick={() => {
+              setSelectedSeats([]);
+            }}
+          >
+            Reset
+          </Button>
+        </Stack>
       </Grid>
     </Card>
   );

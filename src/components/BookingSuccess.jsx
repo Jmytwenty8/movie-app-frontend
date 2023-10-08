@@ -1,11 +1,19 @@
+import { useEffect, useState } from "react";
+import { fetchMovieDetails } from "../helpers/apiHelpers";
 import { Card, Stack, Typography, Box, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import ErrorIcon from "@mui/icons-material/Error";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-const Error = () => {
+const BookingSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const data = location.state.error;
+  const data = location.state.data;
+  const [movieData, setMovieData] = useState({});
+  useEffect(() => {
+    fetchMovieDetails(data.movieId).then((res) => {
+      setMovieData(res);
+    });
+  }, []);
   return (
     <Card
       sx={{
@@ -24,11 +32,12 @@ const Error = () => {
       }}
     >
       <Stack margin={5} marginLeft={40}>
-        <Typography variant='h4' marginBottom={2} marginLeft={2} color={"red"}>
-          {data.toUpperCase()}
+        <Typography variant='h6' marginBottom={2}>
+          Your seats : [<b>{data?.seats?.join(",")}</b>] for{" "}
+          <b>{movieData?.name?.toUpperCase()}</b> is confirmed
         </Typography>
         <Box marginLeft={20}>
-          <ErrorIcon />
+          <CheckCircleIcon />
         </Box>
       </Stack>
       <Box marginLeft={57}>
@@ -45,4 +54,4 @@ const Error = () => {
   );
 };
 
-export default Error;
+export default BookingSuccess;

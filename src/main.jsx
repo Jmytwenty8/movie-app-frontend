@@ -10,6 +10,8 @@ import { store } from "./Store";
 import Movie from "./components/Movie";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Booking from "./components/Booking";
+import BookingSuccess from "./components/BookingSuccess";
+import Error from "./components/Error";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -39,6 +41,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/booking",
         element: <Booking />,
+      },
+      {
+        path: "/movieSuccess",
+        element: <BookingSuccess />,
+      },
+      {
+        path: "/error",
+        element: <Error />,
       },
     ],
   },

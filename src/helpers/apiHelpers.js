@@ -35,3 +35,9 @@ export const getSeatDetails = async (id) => {
   );
   return detail;
 };
+
+export const fetchMovieDetails = async (movieId) => {
+  const url = baseUrl + `/api/movie/${movieId}`;
+  const response = await axios.get(url);
+  return response.data.data;
+};
