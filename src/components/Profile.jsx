@@ -54,7 +54,7 @@ const Profile = () => {
       sx={{
         borderRadius: 10,
         width: `calc(800px - (2 * 16px))`,
-        height: `calc(900px - (2 * 16px))`,
+        height: `calc(800px - (2 * 16px))`,
         [`@media (max-width: 768px)`]: {
           width: "100%",
           height: "100vh",
