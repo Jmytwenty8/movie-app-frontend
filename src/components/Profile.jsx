@@ -1,11 +1,10 @@
 import { Typography, Card, TextField, Button, Stack } from "@mui/material";
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../main";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../Store";
-import Cookies from "js-cookie";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -14,7 +13,6 @@ const Profile = () => {
     user = JSON.parse(user);
   }
   const [emailId, setEmailId] = useState(user?.email);
-  const [emailPassword, setEmailPassword] = useState("");
   const [name, setName] = useState(user?.name);
   const [number, setNumber] = useState(user?.number);
   const [wallet, setWallet] = useState(user?.wallet);
@@ -30,19 +28,15 @@ const Profile = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        baseUrl + "/api/user/patch",
-        {
-          email: emailId,
-          password: emailPassword,
-          name: name,
-          number: number,
-          wallet: wallet,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const body = {
+        email: emailId,
+        name: name,
+        number: number,
+        wallet: wallet,
+      };
+      const response = await axios.post(baseUrl + "/api/user/patch", body, {
+        withCredentials: true,
+      });
       if (response.status === 200 || response.status === 201) {
         const res = await getUserData({ email: emailId });
         dispatch(userActions.login(res.data.data));
@@ -110,19 +104,6 @@ const Profile = () => {
             marginLeft: 10,
             marginRight: 10,
           }}
-          label='Password'
-          value={emailPassword}
-          onChange={(e) => {
-            setEmailPassword(e.target.value);
-          }}
-        />
-        <TextField
-          sx={{
-            display: "flex",
-            marginTop: 5,
-            marginLeft: 10,
-            marginRight: 10,
-          }}
           label='Number'
           value={number}
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
@@ -173,23 +154,6 @@ const Profile = () => {
           >
             UPDATE
           </Button>
-          {/* <Button
-            variant='contained'
-            sx={{
-              marginTop: 5,
-              marginLeft: 10,
-              marginRight: 10,
-              bgcolor: "#f44336",
-              ":hover": {
-                bgcolor: "#b71c1c",
-              },
-              color: "white",
-            }}
-            size='large'
-            type='reset'
-          >
-            Reset
-          </Button> */}
         </Stack>
       </form>
     </Card>
