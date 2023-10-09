@@ -182,6 +182,11 @@ const Booking = () => {
               position: "absolute",
               margin: 40,
               marginTop: -30,
+              bgcolor: "#2b2d42",
+              ":hover": {
+                bgcolor: "#121217",
+              },
+              color: "white",
             }}
             size='large'
             onClick={handleBooking}
@@ -194,6 +199,11 @@ const Booking = () => {
               position: "absolute",
               margin: 60,
               marginTop: -30,
+              bgcolor: "#f44336",
+              ":hover": {
+                bgcolor: "#b71c1c",
+              },
+              color: "white",
             }}
             size='large'
             onClick={() => {

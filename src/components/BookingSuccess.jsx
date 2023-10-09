@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "../helpers/apiHelpers";
-import { Card, Stack, Typography, Box, Button } from "@mui/material";
+import { Card, Typography, Box, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const BookingSuccess = () => {
+  const f = new Intl.ListFormat("en-us", { style: "short" });
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state.data;
@@ -31,21 +32,52 @@ const BookingSuccess = () => {
         },
       }}
     >
-      <Stack margin={5} marginLeft={40}>
-        <Typography variant='h6' marginBottom={2}>
-          Your seats : [<b>{data?.seats?.join(",")}</b>] for{" "}
-          <b>{movieData?.name?.toUpperCase()}</b> is confirmed
-        </Typography>
-        <Box marginLeft={20}>
-          <CheckCircleIcon />
-        </Box>
-      </Stack>
-      <Box marginLeft={57}>
+      <Typography
+        variant='h6'
+        marginTop={10}
+        marginBottom={2}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          letterSpacing: 1,
+        }}
+      >
+        <span style={{ whiteSpace: "nowrap" }}>
+          Your booking for : [<b>{f.format(data?.seats)}</b>] of{" "}
+          <b> {movieData?.name?.toUpperCase()} </b> is confirmed!
+        </span>
+      </Typography>
+      <Box
+        marginBottom={2}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <CheckCircleIcon sx={{ color: "green" }} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
         <Button
           variant='contained'
           onClick={() => {
             navigate("/");
           }}
+          sx={{
+            bgcolor: "#2b2d42",
+            ":hover": {
+              bgcolor: "#121217",
+            },
+            color: "white",
+          }}
+          size='large'
         >
           Home
         </Button>

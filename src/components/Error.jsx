@@ -1,4 +1,4 @@
-import { Card, Stack, Typography, Box, Button } from "@mui/material";
+import { Card, Typography, Box, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import ErrorIcon from "@mui/icons-material/Error";
 
@@ -23,20 +23,50 @@ const Error = () => {
         },
       }}
     >
-      <Stack margin={5} marginLeft={40}>
-        <Typography variant='h4' marginBottom={2} marginLeft={2} color={"red"}>
-          {data.toUpperCase()}
-        </Typography>
-        <Box marginLeft={20}>
-          <ErrorIcon />
-        </Box>
-      </Stack>
-      <Box marginLeft={57}>
+      <Typography
+        variant='h4'
+        marginTop={5}
+        marginBottom={1}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        {data.toUpperCase()}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          marginTop: 1,
+          marginBottom: 1,
+          color: "red",
+        }}
+      >
+        <ErrorIcon />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
         <Button
           variant='contained'
           onClick={() => {
             navigate("/");
           }}
+          sx={{
+            bgcolor: "#2b2d42",
+            ":hover": {
+              bgcolor: "#121217",
+            },
+            color: "white",
+          }}
+          size='large'
         >
           Home
         </Button>
