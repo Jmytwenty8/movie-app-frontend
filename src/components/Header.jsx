@@ -17,9 +17,11 @@ import { useState } from "react";
 import { userActions } from "../Store";
 import Cookies from "js-cookie";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -104,7 +106,14 @@ const Header = () => {
               }}
               onClose={handleDashboardClose}
             >
-              <MenuItem onClick={handleDashboardClose}>Profile</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(null);
+                  navigate("/profile");
+                }}
+              >
+                Profile
+              </MenuItem>
               <MenuItem onClick={handleDashboardClose}>My Bookings</MenuItem>
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>

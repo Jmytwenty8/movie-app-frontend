@@ -13,6 +13,7 @@ import Booking from "./components/Booking";
 import BookingSuccess from "./components/BookingSuccess";
 import Error from "./components/Error";
 import Success from "./components/Success";
+import Profile from "./components/Profile";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -54,6 +55,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/success",
         element: <Success />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },

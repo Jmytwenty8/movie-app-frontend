@@ -33,7 +33,7 @@ const Error = () => {
           alignContent: "center",
         }}
       >
-        {data.toUpperCase()}
+        {data?.toUpperCase()}
       </Typography>
       <Box
         sx={{

@@ -1,24 +1,58 @@
 import { Typography, Card, TextField, Button, Stack } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { baseUrl } from "../main";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { userActions } from "../Store";
+import Cookies from "js-cookie";
 
-const Signup = () => {
-  const [emailId, setEmailId] = useState("");
+const Profile = () => {
+  const dispatch = useDispatch();
+  let user = useSelector((state) => state.user.currentUser);
+  if (user && typeof user === "string") {
+    user = JSON.parse(user);
+  }
+  const [emailId, setEmailId] = useState(user?.email);
   const [emailPassword, setEmailPassword] = useState("");
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
-  const [wallet, setWallet] = useState("");
+  const [name, setName] = useState(user?.name);
+  const [number, setNumber] = useState(user?.number);
+  const [wallet, setWallet] = useState(user?.wallet);
+  const [role, setRole] = useState(user?.role);
 
   const navigator = useNavigate();
 
-  const handleReset = () => {
-    setEmailId("");
-    setEmailPassword("");
-    setName("");
-    setNumber("");
-    setWallet("");
+  const getUserData = async (data) => {
+    const response = axios.post(baseUrl + "/api/user/getUser", data);
+    return response;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        baseUrl + "/api/user/patch",
+        {
+          email: emailId,
+          password: emailPassword,
+          name: name,
+          number: number,
+          wallet: wallet,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
+        const res = await getUserData({ email: emailId });
+        dispatch(userActions.login(res.data.data));
+        navigator("/success", { state: { data: response.data } });
+      }
+    } catch (err) {
+      navigator("/error", {
+        state: { error: err?.response?.data?.message },
+      });
+    }
   };
 
   return (
@@ -26,7 +60,7 @@ const Signup = () => {
       sx={{
         borderRadius: 10,
         width: `calc(800px - (2 * 16px))`,
-        height: `calc(800px - (2 * 16px))`,
+        height: `calc(900px - (2 * 16px))`,
         [`@media (max-width: 768px)`]: {
           width: "100%",
           height: "100vh",
@@ -39,37 +73,9 @@ const Signup = () => {
         },
       }}
     >
-      <form
-        onReset={handleReset}
-        onSubmit={async (event) => {
-          event.preventDefault();
-          try {
-            const response = await axios.post(
-              baseUrl + "/api/user/create",
-              {
-                email: emailId,
-                password: emailPassword,
-                name: name,
-                number: number,
-                wallet: wallet,
-              },
-              {
-                withCredentials: true,
-              }
-            );
-            if (response.status === 200) {
-              response.data.signup = true;
-              navigator("/success", { state: { data: response.data } });
-            }
-          } catch (err) {
-            navigator("/error", {
-              state: { error: err.response.data.message },
-            });
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         <Typography variant='h3' align='center' marginTop={10}>
-          CREATE ACCOUNT
+          PROFILE
         </Typography>
         <TextField
           sx={{
@@ -138,6 +144,17 @@ const Signup = () => {
             setWallet(e.target.value);
           }}
         />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 5,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Role'
+          value={role}
+          disabled
+        />
         <Stack textAlign='center' direction={"row"} display={"block"}>
           <Button
             type='submit'
@@ -154,9 +171,9 @@ const Signup = () => {
             }}
             size='large'
           >
-            Signup
+            UPDATE
           </Button>
-          <Button
+          {/* <Button
             variant='contained'
             sx={{
               marginTop: 5,
@@ -172,11 +189,11 @@ const Signup = () => {
             type='reset'
           >
             Reset
-          </Button>
+          </Button> */}
         </Stack>
       </form>
     </Card>
   );
 };
 
-export default Signup;
+export default Profile;
