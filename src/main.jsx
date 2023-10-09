@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Booking from "./components/Booking";
 import BookingSuccess from "./components/BookingSuccess";
 import Error from "./components/Error";
+import Success from "./components/Success";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -49,6 +50,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/error",
         element: <Error />,
+      },
+      {
+        path: "/success",
+        element: <Success />,
       },
     ],
   },
