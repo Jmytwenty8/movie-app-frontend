@@ -41,3 +41,9 @@ export const fetchMovieDetails = async (movieId) => {
   const response = await axios.get(url);
   return response.data.data;
 };
+
+export const getAllBookingsByUser = async () => {
+  const url = baseUrl + "/api/booking/booked";
+  const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};

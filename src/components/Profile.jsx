@@ -55,10 +55,6 @@ const Profile = () => {
         borderRadius: 10,
         width: `calc(800px - (2 * 16px))`,
         height: `calc(800px - (2 * 16px))`,
-        [`@media (max-width: 768px)`]: {
-          width: "100%",
-          height: "100vh",
-        },
         display: "block",
         margin: "0 auto",
         marginTop: 10,
@@ -153,6 +149,26 @@ const Profile = () => {
             size='large'
           >
             UPDATE
+          </Button>
+          <Button
+            type='submit'
+            variant='contained'
+            onClick={() =>{
+              navigator('/updatePassword')
+            }}
+            sx={{
+              marginTop: 5,
+              marginLeft: 10,
+              marginRight: 10,
+              bgcolor: "#2b2d42",
+              ":hover": {
+                bgcolor: "#121217",
+              },
+              color: "white",
+            }}
+            size='large'
+          >
+            UPDATE PASSWORD
           </Button>
         </Stack>
       </form>

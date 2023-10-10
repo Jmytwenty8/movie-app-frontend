@@ -114,7 +114,14 @@ const Header = () => {
               >
                 Profile
               </MenuItem>
-              <MenuItem onClick={handleDashboardClose}>My Bookings</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(null);
+                  navigate("/booked");
+                }}
+              >
+                My Bookings
+              </MenuItem>
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>
                   Modify Movies

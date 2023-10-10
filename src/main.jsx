@@ -14,6 +14,8 @@ import BookingSuccess from "./components/BookingSuccess";
 import Error from "./components/Error";
 import Success from "./components/Success";
 import Profile from "./components/Profile";
+import MyBooking from "./components/MyBooking";
+import Password from "./components/Password";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -59,6 +61,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/booked",
+        element: <MyBooking />,
+      },
+      {
+        path: "/updatePassword",
+        element: <Password />,
       },
     ],
   },

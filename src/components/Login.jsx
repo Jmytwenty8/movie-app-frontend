@@ -86,6 +86,7 @@ const Login = () => {
           }}
           label='Password'
           value={emailPassword}
+          type='password'
           onChange={(e) => {
             setEmailPassword(e.target.value);
           }}
