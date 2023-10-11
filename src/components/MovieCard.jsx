@@ -14,7 +14,7 @@ const MovieCard = ({ _id, name, description, imageUrl }) => {
     <Card
       sx={{
         margin: 2,
-        width: 250,
+        width: 300,
         height: 360,
         borderRadius: 5,
         ":hover": {

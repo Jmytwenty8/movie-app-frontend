@@ -123,7 +123,12 @@ const Header = () => {
                 My Bookings
               </MenuItem>
               {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listMovies");
+                  }}
+                >
                   Modify Movies
                 </MenuItem>
               )}
@@ -145,9 +150,6 @@ const Header = () => {
                 >
                   Modify Shows
                 </MenuItem>
-              )}
-              {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>Modify Seats</MenuItem>
               )}
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>

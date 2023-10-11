@@ -20,6 +20,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddShows from "./components/AddShows";
 import ListShows from "./components/ListShows";
+import ListMovies from "./components/ListMovies";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -79,8 +80,12 @@ const appRouter = createBrowserRouter([
         element: <AddShows />,
       },
       {
-        path: "listShows",
+        path: "/listShows",
         element: <ListShows />,
+      },
+      {
+        path: "/listMovies",
+        element: <ListMovies />,
       },
     ],
   },
