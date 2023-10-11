@@ -15,11 +15,16 @@ import SupervisorAccountTwoToneIcon from "@mui/icons-material/SupervisorAccountT
 import TheatersTwoToneIcon from "@mui/icons-material/TheatersTwoTone";
 import { getTheaterById } from "../helpers/apiHelpers";
 import { Link } from "react-router-dom";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 
 const Movie = () => {
+  dayjs.extend(isBetween);
   const movieId = useParams().id;
   const [movieData, setMovieData] = useState({});
   const [theatersData, setTheatersData] = useState([]);
+  const [date, setDate] = useState(dayjs());
 
   const fetchMovieDetails = async () => {
     const url = baseUrl + `/api/movie/${movieId}`;
@@ -32,13 +37,20 @@ const Movie = () => {
   }, []);
 
   useEffect(() => {
+    setTheatersData([]);
     movieData?.shows?.map((show) => {
-      getTheaterById(show.theaterId).then((theater) => {
-        theater.showtime = show.showtime;
-        setTheatersData((state) => [...state, theater]);
-      });
+      let dateISO = dayjs(date).format();
+      let startDateISO = dayjs(show.startDate).format();
+      let endDateISO = dayjs(show.endDate).format();
+      if (dayjs(dateISO).isBetween(startDateISO, endDateISO, null, "[]")) {
+        getTheaterById(show.theaterId).then((theater) => {
+          theater.showtime = show.showtime;
+          setTheatersData((state) => [...state, theater]);
+        });
+      }
     });
-  }, [movieData]);
+  }, [movieData, date]);
+
   return (
     <Stack direction={"row"}>
       <Card
@@ -121,7 +133,24 @@ const Movie = () => {
       <Typography margin={10} marginRight={1}>
         <TheatersTwoToneIcon fontSize='large' />
       </Typography>
+      <Stack></Stack>
       <Stack direction={"column"} margin={10} marginLeft={2}>
+        <DatePicker
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 3,
+            marginRight: 3,
+            marginBottom: 2,
+          }}
+          label='Select Date'
+          value={date}
+          disablePast
+          onChange={(val) => {
+            const date = dayjs(val).format();
+            setDate(date);
+          }}
+        />
         {theatersData?.map((theater) => {
           return (
             <Card
@@ -194,6 +223,7 @@ const Movie = () => {
                     theaterId: theater._id,
                     showtime: theater.showtime,
                     movieId: movieData._id,
+                    reservationDate: date,
                   }}
                   to={"/booking"}
                 >

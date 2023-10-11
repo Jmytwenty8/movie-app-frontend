@@ -137,7 +137,14 @@ const Header = () => {
                 </MenuItem>
               )}
               {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>Modify Shows</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listShows");
+                  }}
+                >
+                  Modify Shows
+                </MenuItem>
               )}
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem onClick={handleDashboardClose}>Modify Seats</MenuItem>

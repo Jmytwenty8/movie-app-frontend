@@ -16,6 +16,10 @@ import Success from "./components/Success";
 import Profile from "./components/Profile";
 import MyBooking from "./components/MyBooking";
 import Password from "./components/Password";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import AddShows from "./components/AddShows";
+import ListShows from "./components/ListShows";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -70,6 +74,14 @@ const appRouter = createBrowserRouter([
         path: "/updatePassword",
         element: <Password />,
       },
+      {
+        path: "/addShows",
+        element: <AddShows />,
+      },
+      {
+        path: "listShows",
+        element: <ListShows />,
+      },
     ],
   },
 ]);
@@ -77,7 +89,9 @@ const appRouter = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={appRouter} />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <RouterProvider router={appRouter} />
+      </LocalizationProvider>
     </QueryClientProvider>
   </Provider>
 );

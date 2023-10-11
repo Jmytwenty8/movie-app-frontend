@@ -47,3 +47,15 @@ export const getAllBookingsByUser = async () => {
   const response = await axios.get(url, { withCredentials: true });
   return response.data.data;
 };
+
+export const getAllTheaters = async () => {
+  const url = baseUrl + "/api/theater/";
+  const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};
+
+export const getAllShows = async () => {
+  const url = baseUrl + "/api/show/";
+  const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};

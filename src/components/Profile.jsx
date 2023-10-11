@@ -151,10 +151,9 @@ const Profile = () => {
             UPDATE
           </Button>
           <Button
-            type='submit'
             variant='contained'
-            onClick={() =>{
-              navigator('/updatePassword')
+            onClick={() => {
+              navigator("/updatePassword");
             }}
             sx={{
               marginTop: 5,
