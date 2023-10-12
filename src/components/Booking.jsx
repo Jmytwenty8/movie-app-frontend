@@ -56,6 +56,12 @@ const Booking = () => {
   };
 
   const handleBooking = async () => {
+    if (selectedSeats.length === 0) {
+      navigate("/error", {
+        state: { error: "You have not selected any seats" },
+      });
+      return;
+    }
     const seats = selectedSeats.map((seat) => {
       let seatNumber = "";
       seatNumber = seatNumber.concat(seat.row).concat(seat.column);
