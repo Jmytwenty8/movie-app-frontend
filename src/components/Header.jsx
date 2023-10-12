@@ -134,9 +134,10 @@ const Header = () => {
               )}
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem
-                  onClick={handleDashboardClose}
-                  component={Link}
-                  to={"/create"}
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listTheaters");
+                  }}
                 >
                   Modify Theaters
                 </MenuItem>

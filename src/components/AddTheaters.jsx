@@ -4,44 +4,33 @@ import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../main";
 import axios from "axios";
 
-const AddMovies = () => {
+const AddTheaters = () => {
   const navigator = useNavigate();
 
   const [name, setName] = useState();
-  const [description, setDescription] = useState();
-  const [imdb, setImdb] = useState();
-  const [runtime, setRuntime] = useState();
-  const [actors, setActors] = useState();
-  const [imageUrl, setImageUrl] = useState();
-  const [onFocusActor, setOnFocusActor] = useState(false);
-  const [onFocusRuntime, setOnFocusRuntime] = useState(false);
+  const [location, setLocation] = useState();
+  const [price, setPrice] = useState();
+  const [totalSeats, setTotalSeats] = useState();
+  const [onFocus, setOnFocus] = useState(false);
 
-  const handleOnFocusActor = () => {
-    setOnFocusActor(true);
+  const handleOnFocus = () => {
+    setOnFocus(true);
   };
-  const handleOnFocusRuntime = () => {
-    setOnFocusRuntime(true);
-  };
-  const handleOnBlurActor = () => {
-    setOnFocusActor(false);
-  };
-  const handleOnBlurRuntime = () => {
-    setOnFocusRuntime(false);
+
+  const handleOnBlur = () => {
+    setOnFocus(false);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const separatedActors = actors.split(",");
       const body = {
         name: name,
-        description: description,
-        imdb: imdb,
-        runtime: runtime,
-        actors: separatedActors,
-        imageUrl: imageUrl,
+        location: location,
+        price: price,
+        totalSeats: totalSeats,
       };
-      const response = await axios.post(baseUrl + "/api/movie/create", body, {
+      const response = await axios.post(baseUrl + "/api/theater/create", body, {
         withCredentials: true,
       });
       if (response.status === 200 || response.status === 201) {
@@ -59,7 +48,7 @@ const AddMovies = () => {
       sx={{
         borderRadius: 10,
         width: `calc(800px - (2 * 16px))`,
-        height: `calc(700px - (2 * 16px))`,
+        height: `calc(600px - (2 * 16px))`,
         display: "block",
         margin: "0 auto",
         marginTop: 10,
@@ -80,7 +69,7 @@ const AddMovies = () => {
           }}
         >
           {" "}
-          MOVIE
+          THEATER
         </Typography>
         <Stack direction={"column"}>
           <TextField
@@ -90,7 +79,7 @@ const AddMovies = () => {
               marginLeft: 10,
               marginRight: 10,
             }}
-            label='Movie Name'
+            label='Theater Name'
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -103,10 +92,10 @@ const AddMovies = () => {
               marginLeft: 10,
               marginRight: 10,
             }}
-            label='Movie Description'
-            value={description}
+            label='Theater Location'
+            value={location}
             onChange={(e) => {
-              setDescription(e.target.value);
+              setLocation(e.target.value);
             }}
           />
           <TextField
@@ -116,11 +105,11 @@ const AddMovies = () => {
               marginLeft: 10,
               marginRight: 10,
             }}
-            label='IMDB'
-            value={imdb}
+            label='Price'
+            value={price}
             type='number'
             onChange={(e) => {
-              setImdb(e.target.value);
+              setPrice(e.target.value);
             }}
           />
           <TextField
@@ -130,45 +119,14 @@ const AddMovies = () => {
               marginLeft: 10,
               marginRight: 10,
             }}
-            label='Runtime'
-            value={runtime}
-            helperText={onFocusRuntime ? "Enter Length in minutes" : ""}
-            onFocus={handleOnFocusRuntime}
+            label='Total Seats'
+            value={totalSeats}
+            helperText={onFocus ? "Keep 25 as of right now" : ""}
+            onFocus={handleOnFocus}
             type='number'
-            onBlur={handleOnBlurRuntime}
+            onBlur={handleOnBlur}
             onChange={(e) => {
-              setRuntime(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Actors'
-            helperText={
-              onFocusActor ? "Please enter actors separated by comma(,)" : ""
-            }
-            onFocus={handleOnFocusActor}
-            onBlur={handleOnBlurActor}
-            value={actors}
-            onChange={(e) => {
-              setActors(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Image URL'
-            value={imageUrl}
-            onChange={(e) => {
-              setImageUrl(e.target.value);
+              setTotalSeats(e.target.value);
             }}
           />
           <Button
@@ -194,4 +152,4 @@ const AddMovies = () => {
   );
 };
 
-export default AddMovies;
+export default AddTheaters;

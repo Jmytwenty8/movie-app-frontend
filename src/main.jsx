@@ -22,6 +22,8 @@ import AddShows from "./components/AddShows";
 import ListShows from "./components/ListShows";
 import ListMovies from "./components/ListMovies";
 import AddMovies from "./components/AddMovies";
+import ListTheaters from "./components/ListTheaters";
+import AddTheaters from "./components/AddTheaters";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -91,6 +93,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/addMovies",
         element: <AddMovies />,
+      },
+      {
+        path: "/listTheaters",
+        element: <ListTheaters />,
+      },
+      {
+        path: "/addTheaters",
+        element: <AddTheaters />,
       },
     ],
   },
