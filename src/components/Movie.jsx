@@ -133,7 +133,6 @@ const Movie = () => {
       <Typography margin={10} marginRight={1}>
         <TheatersTwoToneIcon fontSize='large' />
       </Typography>
-      <Stack></Stack>
       <Stack direction={"column"} margin={10} marginLeft={2}>
         <DatePicker
           sx={{
@@ -151,88 +150,122 @@ const Movie = () => {
             setDate(date);
           }}
         />
-        {theatersData?.map((theater) => {
-          return (
-            <Card
-              key={theater._id + theater.showtime}
+        {theatersData.length > 0 ? (
+          theatersData?.map((theater) => {
+            return (
+              <Card
+                key={theater._id + theater.showtime}
+                sx={{
+                  borderRadius: 5,
+                  width: `calc(800px - (2 * 16px))`,
+                  height: `calc(150px - (2 * 16px))`,
+                  [`@media (max-width: 768px)`]: {
+                    width: "80%",
+                    height: "30vh",
+                  },
+                  margin: 2,
+                  marginTop: 0,
+                  ":hover": {
+                    boxShadow: "10px 10px 20px #ccc",
+                  },
+                }}
+              >
+                <Stack direction={"row"}>
+                  <Stack direction={"column"}>
+                    <Typography
+                      variant='h5'
+                      margin={1}
+                      marginLeft={2}
+                      marginBottom={0}
+                    >
+                      {theater.name}
+                    </Typography>
+                    <Typography
+                      variant='subtitle1'
+                      margin={1}
+                      marginBottom={0}
+                      marginLeft={2}
+                      marginTop={0}
+                    >
+                      {theater.location}
+                    </Typography>
+                    <Typography
+                      variant='body1'
+                      margin={1}
+                      marginBottom={0}
+                      marginLeft={2}
+                      marginTop={0}
+                    >
+                      <b>Rs. {theater.price}</b>
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      margin={1}
+                      marginLeft={2}
+                      marginTop={0}
+                    >
+                      <b>Timing: {theater.showtime.toUpperCase()}</b>
+                    </Typography>
+                  </Stack>
+                  <Button
+                    sx={{
+                      margin: "auto",
+                      marginRight: 2,
+                      bgcolor: "#2b2d42",
+                      ":hover": {
+                        bgcolor: "#121217",
+                      },
+                      color: "white",
+                    }}
+                    size='small'
+                    component={Link}
+                    state={{
+                      theaterId: theater._id,
+                      showtime: theater.showtime,
+                      movieId: movieData._id,
+                      reservationDate: date,
+                    }}
+                    to={"/booking"}
+                  >
+                    Book
+                  </Button>
+                </Stack>
+              </Card>
+            );
+          })
+        ) : (
+          <Card
+            sx={{
+              borderRadius: 5,
+              width: `calc(800px - (2 * 16px))`,
+              height: `calc(150px - (2 * 16px))`,
+              [`@media (max-width: 768px)`]: {
+                width: "80%",
+                height: "30vh",
+              },
+              margin: 2,
+              marginTop: 0,
+              ":hover": {
+                boxShadow: "10px 10px 20px #ccc",
+              },
+            }}
+          >
+            <Typography
+              variant='h6'
+              marginTop={5}
+              marginBottom={0}
               sx={{
-                borderRadius: 5,
-                width: `calc(800px - (2 * 16px))`,
-                height: `calc(150px - (2 * 16px))`,
-                [`@media (max-width: 768px)`]: {
-                  width: "80%",
-                  height: "30vh",
-                },
-                margin: 2,
-                marginTop: 0,
-                ":hover": {
-                  boxShadow: "10px 10px 20px #ccc",
-                },
+                display: "flex",
+                justifyContent: "center",
+                alignContent: "center",
+                letterSpacing: 1,
               }}
             >
-              <Stack direction={"row"}>
-                <Stack direction={"column"}>
-                  <Typography
-                    variant='h5'
-                    margin={1}
-                    marginLeft={2}
-                    marginBottom={0}
-                  >
-                    {theater.name}
-                  </Typography>
-                  <Typography
-                    variant='subtitle1'
-                    margin={1}
-                    marginBottom={0}
-                    marginLeft={2}
-                    marginTop={0}
-                  >
-                    {theater.location}
-                  </Typography>
-                  <Typography
-                    variant='body1'
-                    margin={1}
-                    marginBottom={0}
-                    marginLeft={2}
-                    marginTop={0}
-                  >
-                    <b>Rs. {theater.price}</b>
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    margin={1}
-                    marginLeft={2}
-                    marginTop={0}
-                  >
-                    <b>Timing: {theater.showtime.toUpperCase()}</b>
-                  </Typography>
-                </Stack>
-                <Button
-                  sx={{
-                    margin: "auto",
-                    marginRight: 2,
-                    bgcolor: "#2b2d42",
-                    ":hover": {
-                      bgcolor: "#121217",
-                    },
-                    color: "white",
-                  }}
-                  size='small'
-                  component={Link}
-                  state={{
-                    theaterId: theater._id,
-                    showtime: theater.showtime,
-                    movieId: movieData._id,
-                    reservationDate: date,
-                  }}
-                  to={"/booking"}
-                >
-                  Book
-                </Button>
-              </Stack>
-            </Card>
-          );
-        })}
+              {" "}
+              No Shows Found
+            </Typography>
+          </Card>
+        )}
       </Stack>
     </Stack>
   );
