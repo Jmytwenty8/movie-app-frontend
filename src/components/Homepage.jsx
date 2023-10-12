@@ -77,7 +77,6 @@ const Homepage = () => {
           return <MovieCard {...movie} key={movie._id} />;
         })}
       </Box>
-      ;
     </Box>
   );
 };

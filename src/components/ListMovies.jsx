@@ -48,12 +48,12 @@ const ListMovies = () => {
           <Typography
             variant='h3'
             align='center'
-            marginBottom={0}
+            marginBottom={1}
             marginTop={10}
             marginLeft={50}
             marginRight={50}
           >
-            Movies
+            MOVIES
           </Typography>
           <Button
             variant='contained'
@@ -71,7 +71,7 @@ const ListMovies = () => {
             }}
             size='large'
           >
-            Add Movies
+            Add Movie
           </Button>
         </Stack>
       </Box>
@@ -164,7 +164,7 @@ const ListMovies = () => {
                         }}
                         size='large'
                       >
-                        Cancel Show
+                        Delete Movie
                       </Button>
                     </Box>
                   </Card>

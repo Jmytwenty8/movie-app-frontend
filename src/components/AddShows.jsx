@@ -206,7 +206,7 @@ const AddShows = () => {
             }}
             size='large'
           >
-            UPDATE
+            CREATE
           </Button>
         </Stack>
       </form>

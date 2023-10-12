@@ -71,7 +71,7 @@ const ListShows = () => {
           <Typography
             variant='h3'
             align='center'
-            marginBottom={0}
+            marginBottom={1}
             marginTop={10}
             marginLeft={50}
             marginRight={50}
@@ -94,7 +94,7 @@ const ListShows = () => {
             }}
             size='large'
           >
-            Add Shows
+            Add Show
           </Button>
         </Stack>
       </Box>
