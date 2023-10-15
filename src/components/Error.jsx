@@ -6,6 +6,7 @@ const Error = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state.error;
+
   return (
     <Card
       sx={{
@@ -33,7 +34,7 @@ const Error = () => {
           alignContent: "center",
         }}
       >
-        {data?.toUpperCase()}
+        {Array.isArray(data) ? data[0]?.toUpperCase() : data?.toUpperCase()}
       </Typography>
       <Box
         sx={{

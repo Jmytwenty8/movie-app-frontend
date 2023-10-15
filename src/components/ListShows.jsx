@@ -178,7 +178,7 @@ const ListShows = () => {
                         letterSpacing: 1,
                       }}
                     >
-                      Start Date: <b>{show.endDate}</b>
+                      End Date: <b>{show.endDate}</b>
                     </Typography>
                     <Typography
                       variant='h6'

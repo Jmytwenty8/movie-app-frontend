@@ -120,7 +120,13 @@ const Movie = () => {
           </Typography>
         </Stack>
         <Stack marginLeft={4}>
-          <Rating value={movieData.imdb % 5} precision={0.5} />
+          <Rating
+            value={movieData.imdb % 5}
+            precision={0.5}
+            sx={{
+              pointerEvents: "none",
+            }}
+          />
           <Typography>
             <b>
               Runtime: {String(movieData.runtime / 60)[0]} hours{" "}

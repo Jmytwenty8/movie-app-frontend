@@ -181,7 +181,7 @@ const ListTheaters = () => {
                         }}
                         size='large'
                       >
-                        Delete Movie
+                        Delete Theater
                       </Button>
                     </Box>
                   </Card>

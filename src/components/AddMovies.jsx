@@ -7,12 +7,12 @@ import axios from "axios";
 const AddMovies = () => {
   const navigator = useNavigate();
 
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
-  const [imdb, setImdb] = useState();
-  const [runtime, setRuntime] = useState();
-  const [actors, setActors] = useState();
-  const [imageUrl, setImageUrl] = useState();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [imdb, setImdb] = useState("");
+  const [runtime, setRuntime] = useState("");
+  const [actors, setActors] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [onFocusActor, setOnFocusActor] = useState(false);
   const [onFocusRuntime, setOnFocusRuntime] = useState(false);
 
