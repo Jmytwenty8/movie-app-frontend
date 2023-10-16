@@ -35,6 +35,7 @@ const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <Homepage />,
     children: [
       {
         path: "/signin",
