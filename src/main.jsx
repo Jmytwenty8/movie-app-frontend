@@ -1,6 +1,11 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./components/Login.jsx";
 import App from "./App";
 import Signup from "./components/Signup";
@@ -35,7 +40,6 @@ const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <Homepage />,
     children: [
       {
         path: "/signin",
@@ -112,6 +116,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/allbookings",
         element: <AllBookings />,
+      },
+      {
+        path: "*",
+        element: <Navigate to='/' replace />,
       },
     ],
   },
