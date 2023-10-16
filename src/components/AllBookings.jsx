@@ -2,16 +2,17 @@ import { Card, Typography, Button, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  getAllBookingsByUser,
+  getAllBookings,
   fetchMovieDetails,
   getTheaterById,
   getSeatDetails,
+  getUserById,
 } from "../helpers/apiHelpers";
 import { baseUrl } from "../main";
 import axios from "axios";
 import dayjs from "dayjs";
 
-const MyBooking = () => {
+const AllBookings = () => {
   const [bookingData, setBookingData] = useState([]);
   const f = new Intl.ListFormat("en-us", { style: "short" });
 
@@ -36,7 +37,7 @@ const MyBooking = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const allBookings = await getAllBookingsByUser();
+      const allBookings = await getAllBookings();
       const resolvedData = await Promise.all(
         allBookings.map(async (booking) => {
           const data = {
@@ -47,6 +48,8 @@ const MyBooking = () => {
           );
           data._id = booking._id;
           data.showtime = booking.showtime;
+          const user = await getUserById(booking.userId);
+          data.user = user;
           const movieDetails = await fetchMovieDetails(booking.movieId);
           data.movie = movieDetails.name;
           const theaterDetails = await getTheaterById(booking.theaterId);
@@ -104,7 +107,7 @@ const MyBooking = () => {
                     sx={{
                       borderRadius: 8,
                       width: `calc(1000px - (2 * 8px))`,
-                      height: `calc(290px - (2 * 8px))`,
+                      height: `calc(350px - (2 * 8px))`,
                       [`@media (max-width: 768px)`]: {
                         width: "100%",
                         height: "100vh",
@@ -153,6 +156,32 @@ const MyBooking = () => {
                       }}
                     >
                       Reservation Date: <b>{booking.reservationDate}</b>
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      marginTop={1}
+                      marginBottom={0}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      Booked By: <b>{booking?.user?.name}</b>
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      marginTop={1}
+                      marginBottom={0}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      Email: <b>{booking?.user?.email}</b>
                     </Typography>
                     <Typography
                       variant='h6'
@@ -253,4 +282,4 @@ const MyBooking = () => {
   );
 };
 
-export default MyBooking;
+export default AllBookings;

@@ -42,6 +42,12 @@ export const fetchMovieDetails = async (movieId) => {
   return response.data.data;
 };
 
+export const getAllBookings = async () => {
+  const url = baseUrl + "/api/booking/allbookings/";
+  const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};
+
 export const getAllBookingsByUser = async () => {
   const url = baseUrl + "/api/booking/booked";
   const response = await axios.get(url, { withCredentials: true });
@@ -57,5 +63,18 @@ export const getAllTheaters = async () => {
 export const getAllShows = async () => {
   const url = baseUrl + "/api/show/";
   const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};
+
+export const getAllUsers = async () => {
+  const url = baseUrl + "/api/user/";
+  const response = await axios.get(url, { withCredentials: true });
+  return response.data.data;
+};
+
+export const getUserById = async (id) => {
+  const response = await axios.get(baseUrl + `/api/user/getUserById/${id}`, {
+    withCredentials: true,
+  });
   return response.data.data;
 };

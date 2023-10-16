@@ -114,14 +114,25 @@ const Header = () => {
               >
                 Profile
               </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setAnchorEl(null);
-                  navigate("/booked");
-                }}
-              >
-                My Bookings
-              </MenuItem>
+              {isLoggedIn && user && user.role === "admin" ? (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/allbookings");
+                  }}
+                >
+                  All Bookings
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/booked");
+                  }}
+                >
+                  My Bookings
+                </MenuItem>
+              )}
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem
                   onClick={() => {
@@ -130,6 +141,16 @@ const Header = () => {
                   }}
                 >
                   Modify Movies
+                </MenuItem>
+              )}
+              {isLoggedIn && user && user.role === "admin" && (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listUsers");
+                  }}
+                >
+                  Modify Users
                 </MenuItem>
               )}
               {isLoggedIn && user && user.role === "admin" && (
