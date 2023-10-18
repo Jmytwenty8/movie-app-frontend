@@ -28,7 +28,6 @@ const Movie = () => {
   const [theatersData, setTheatersData] = useState([]);
   const [date, setDate] = useState(dayjs());
   const [wishlist, setWishlist] = useState(false);
-  const [wishlistId, setWishlistId] = useState("");
 
   const fetchMovieDetails = async () => {
     const url = baseUrl + `/api/movie/${movieId}`;
@@ -48,7 +47,6 @@ const Movie = () => {
     );
     if (response.status === 200) {
       setWishlist(true);
-      setWishlistId(response.data.data._id);
     }
   };
 
