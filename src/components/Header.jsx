@@ -133,6 +133,16 @@ const Header = () => {
                   My Bookings
                 </MenuItem>
               )}
+              {isLoggedIn && user && user.role !== "admin" && (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/wishlist");
+                  }}
+                >
+                  Wishlist
+                </MenuItem>
+              )}
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem
                   onClick={() => {

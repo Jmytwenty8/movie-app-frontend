@@ -13,11 +13,13 @@ import {
 import MovieFilterTwoToneIcon from "@mui/icons-material/MovieFilterTwoTone";
 import SupervisorAccountTwoToneIcon from "@mui/icons-material/SupervisorAccountTwoTone";
 import TheatersTwoToneIcon from "@mui/icons-material/TheatersTwoTone";
-import { getTheaterById } from "../helpers/apiHelpers";
+import { getTheaterById, getAllWishlistByUser } from "../helpers/apiHelpers";
 import { Link } from "react-router-dom";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const Movie = () => {
   dayjs.extend(isBetween);
@@ -25,6 +27,8 @@ const Movie = () => {
   const [movieData, setMovieData] = useState({});
   const [theatersData, setTheatersData] = useState([]);
   const [date, setDate] = useState(dayjs());
+  const [wishlist, setWishlist] = useState(false);
+  const [wishlistId, setWishlistId] = useState("");
 
   const fetchMovieDetails = async () => {
     const url = baseUrl + `/api/movie/${movieId}`;
@@ -32,8 +36,53 @@ const Movie = () => {
     setMovieData(response.data.data);
   };
 
+  const makeWishlist = async (id) => {
+    if (wishlist) return;
+    const url = baseUrl + `/api/wishlist/create`;
+    const response = await axios.post(
+      url,
+      {
+        movieId: id,
+      },
+      { withCredentials: true }
+    );
+    if (response.status === 200) {
+      setWishlist(true);
+      setWishlistId(response.data.data._id);
+    }
+  };
+
+  const removeWishlist = async (id) => {
+    if (!wishlist) return;
+    getAllWishlistByUser()
+      .then((data) => {
+        data.map((wishlist) => {
+          if (wishlist.movieId === id) {
+            axios.post(
+              baseUrl + "/api/wishlist/remove",
+              { id: wishlist._id },
+              { withCredentials: true }
+            );
+          }
+        });
+      })
+      .then(() => {
+        setWishlist(false);
+      });
+  };
+
   useEffect(() => {
     fetchMovieDetails();
+  }, []);
+
+  useEffect(() => {
+    getAllWishlistByUser().then((data) => {
+      data.map((movie) => {
+        if (movie.movieId === movieId) {
+          setWishlist(true);
+        }
+      });
+    });
   }, []);
 
   useEffect(() => {
@@ -74,6 +123,7 @@ const Movie = () => {
           sx={{ height: "50%", width: "100%" }}
           image={movieData?.imageUrl}
           title={movieData?.name}
+          marginBottom={2}
         />
 
         <Typography
@@ -86,16 +136,27 @@ const Movie = () => {
           <MovieFilterTwoToneIcon fontSize='large' />
         </Typography>
 
-        <Typography
-          gutterBottom
-          variant='h3'
-          component='div'
-          margin={4}
-          marginTop={2}
-          marginBottom={2}
-        >
-          {movieData?.name?.toUpperCase()}
-        </Typography>
+        <Stack direction={"row"}>
+          <Typography
+            gutterBottom
+            variant='h3'
+            component='div'
+            margin={4}
+            marginTop={2}
+            marginBottom={2}
+          >
+            {movieData?.name?.toUpperCase()}
+          </Typography>
+          {!wishlist ? (
+            <Button onClick={() => makeWishlist(movieData._id)}>
+              <FavoriteBorderIcon color='error' />
+            </Button>
+          ) : (
+            <Button onClick={() => removeWishlist(movieData._id)}>
+              <FavoriteIcon color='error' />
+            </Button>
+          )}
+        </Stack>
         <Typography
           gutterBottom
           variant='body1'

@@ -31,6 +31,7 @@ import ListTheaters from "./components/ListTheaters";
 import AddTheaters from "./components/AddTheaters";
 import ListUsers from "./components/ListUsers";
 import AllBookings from "./components/AllBookings";
+import ListWishlist from "./components/ListWishlist";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -120,6 +121,10 @@ const appRouter = createBrowserRouter([
       {
         path: "*",
         element: <Navigate to='/' replace />,
+      },
+      {
+        path: "/wishlist",
+        element: <ListWishlist />,
       },
     ],
   },

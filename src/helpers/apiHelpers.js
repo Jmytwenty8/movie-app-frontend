@@ -78,3 +78,10 @@ export const getUserById = async (id) => {
   });
   return response.data.data;
 };
+
+export const getAllWishlistByUser = async () => {
+  const response = await axios.get(baseUrl + "/api/wishlist/", {
+    withCredentials: true,
+  });
+  return response.data.data;
+};
