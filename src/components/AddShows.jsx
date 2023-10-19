@@ -170,6 +170,7 @@ const AddShows = () => {
               marginLeft: 10,
               marginRight: 10,
             }}
+            disablePast
             label='Start Date'
             value={startDate}
             onChange={(val) => {
@@ -185,6 +186,7 @@ const AddShows = () => {
               marginRight: 10,
             }}
             label='End Date'
+            disablePast
             value={endDate}
             onChange={(val) => {
               const date = dayjs(val).format();
