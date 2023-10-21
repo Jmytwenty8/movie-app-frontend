@@ -33,6 +33,7 @@ import AllBookings from "./components/AllBookings";
 import ListWishlist from "./components/ListWishlist";
 import ListReviews from "./components/ListReviews";
 import AddReview from "./components/AddReview";
+import ListReviewsForAdmin from "./components/ListReviewsForAdmin";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -130,6 +131,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/addReview",
         element: <AddReview />,
+      },
+      {
+        path: "/allreviews",
+        element: <ListReviewsForAdmin />,
       },
       {
         path: "*",

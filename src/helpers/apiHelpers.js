@@ -92,3 +92,10 @@ export const getAllReviewsByUser = async () => {
   });
   return response.data.data;
 };
+
+export const getAllReviews = async () => {
+  const response = await axios.get(baseUrl + "/api/review/allreviews", {
+    withCredentials: true,
+  });
+  return response.data.data;
+};

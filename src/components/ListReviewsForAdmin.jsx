@@ -1,34 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { Card, Typography, Button, Box, Stack, Rating } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  getAllReviewsByUser,
-  fetchMovieDetails,
-  getAllBookingsByUser,
-} from "../helpers/apiHelpers";
+import { getAllReviews, fetchMovieDetails } from "../helpers/apiHelpers";
 import dayjs from "dayjs";
-import { baseUrl } from "../main";
-import axios from "axios";
 
-const ListReviews = () => {
+const ListReviewsForAdmin = () => {
   const [reviewData, setReviewData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      let reviews = await getAllReviewsByUser();
-      const allBookings = await getAllBookingsByUser();
-      const filteredReviews = reviews.filter((review) => {
-        return !allBookings.some((booking) => booking._id === review.bookingId);
-      });
-      filteredReviews.map(async (review) => {
-        const removeReview = await axios.post(
-          baseUrl + "/api/review/remove",
-          { id: review._id },
-          { withCredentials: true }
-        );
-      });
-      reviews = await getAllReviewsByUser();
+      let reviews = await getAllReviews();
       const resolvedData = await Promise.all(
         reviews.map(async (review) => {
           const data = {
@@ -134,32 +115,7 @@ const ListReviews = () => {
                           justifyContent: "center",
                           alignContent: "center",
                         }}
-                      >
-                        <Button
-                          variant='contained'
-                          sx={{
-                            bgcolor: "#2b2d42",
-                            ":hover": {
-                              bgcolor: "#121217",
-                            },
-                            color: "white",
-                          }}
-                          size='large'
-                          component={Link}
-                          state={{
-                            id: review._id,
-                            movie: review.movie,
-                          }}
-                          to={"/addReview"}
-                          disabled={
-                            review.reservationDate > dayjs().format()
-                              ? true
-                              : false
-                          }
-                        >
-                          Write Review
-                        </Button>
-                      </Box>
+                      ></Box>
                     </Card>
                   ) : (
                     <Card
@@ -280,4 +236,4 @@ const ListReviews = () => {
   );
 };
 
-export default ListReviews;
+export default ListReviewsForAdmin;
