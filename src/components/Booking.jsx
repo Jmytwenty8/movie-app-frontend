@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { baseUrl } from "../main";
@@ -15,6 +16,7 @@ const Booking = () => {
   const [theaterData, setTheaterData] = useState({});
   const [allSeats, setAllSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  console.log(data);
 
   const getVacantSeats = async () => {
     let seats = await axios.post(baseUrl + "/api/booking/vacantseats", data, {
@@ -73,6 +75,16 @@ const Booking = () => {
         withCredentials: true,
       });
       if (response.status === 200) {
+        const review = await axios.post(
+          baseUrl + "/api/review/create",
+          {
+            movieId: data.movieId,
+            isPending: true,
+            bookingId: response.data.data._id,
+            reservationDate: data.reservationDate,
+          },
+          { withCredentials: true }
+        );
         navigate("/movieSuccess", { state: { data } });
       }
     } catch (err) {

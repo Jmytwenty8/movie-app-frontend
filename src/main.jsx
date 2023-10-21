@@ -4,7 +4,6 @@ import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
-  useNavigate,
 } from "react-router-dom";
 import Login from "./components/Login.jsx";
 import App from "./App";
@@ -32,6 +31,8 @@ import AddTheaters from "./components/AddTheaters";
 import ListUsers from "./components/ListUsers";
 import AllBookings from "./components/AllBookings";
 import ListWishlist from "./components/ListWishlist";
+import ListReviews from "./components/ListReviews";
+import AddReview from "./components/AddReview";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -119,12 +120,20 @@ const appRouter = createBrowserRouter([
         element: <AllBookings />,
       },
       {
-        path: "*",
-        element: <Navigate to='/' replace />,
+        path: "/reviews",
+        element: <ListReviews />,
       },
       {
         path: "/wishlist",
         element: <ListWishlist />,
+      },
+      {
+        path: "/addReview",
+        element: <AddReview />,
+      },
+      {
+        path: "*",
+        element: <Navigate to='/' replace />,
       },
     ],
   },

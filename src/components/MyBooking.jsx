@@ -10,6 +10,9 @@ import {
 import { baseUrl } from "../main";
 import axios from "axios";
 import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+dayjs.extend(isSameOrAfter);
 
 const MyBooking = () => {
   const [bookingData, setBookingData] = useState([]);
@@ -38,33 +41,41 @@ const MyBooking = () => {
     const fetchData = async () => {
       const allBookings = await getAllBookingsByUser();
       const resolvedData = await Promise.all(
-        allBookings.map(async (booking) => {
-          const data = {
-            seats: [],
-          };
-          data.reservationDate = dayjs(booking.reservationDate).format(
-            "DD-MM-YYYY"
-          );
-          data._id = booking._id;
-          data.showtime = booking.showtime;
-          const movieDetails = await fetchMovieDetails(booking.movieId);
-          data.movie = movieDetails.name;
-          const theaterDetails = await getTheaterById(booking.theaterId);
-          data.theater = theaterDetails.name;
-          if (booking.seats) {
-            const seatNumbers = await Promise.all(
-              booking.seats.map(async (seat) => {
-                const seatDetails = await getSeatDetails(seat);
-                let seatNumber = "";
-                seatNumber += seatDetails.data.data.row;
-                seatNumber += seatDetails.data.data.column;
-                return seatNumber;
-              })
+        allBookings
+          .filter((booking) => {
+            return dayjs(booking.reservationDate).isSameOrAfter(
+              dayjs(),
+              "date"
             );
-            data.seats = seatNumbers;
-          }
-          return data;
-        })
+          })
+          .map(async (booking) => {
+            const data = {
+              seats: [],
+            };
+
+            data.reservationDate = dayjs(booking.reservationDate).format(
+              "DD-MM-YYYY"
+            );
+            data._id = booking._id;
+            data.showtime = booking.showtime;
+            const movieDetails = await fetchMovieDetails(booking.movieId);
+            data.movie = movieDetails.name;
+            const theaterDetails = await getTheaterById(booking.theaterId);
+            data.theater = theaterDetails.name;
+            if (booking.seats) {
+              const seatNumbers = await Promise.all(
+                booking.seats.map(async (seat) => {
+                  const seatDetails = await getSeatDetails(seat);
+                  let seatNumber = "";
+                  seatNumber += seatDetails.data.data.row;
+                  seatNumber += seatDetails.data.data.column;
+                  return seatNumber;
+                })
+              );
+              data.seats = seatNumbers;
+            }
+            return data;
+          })
       );
       setBookingData(resolvedData);
     };

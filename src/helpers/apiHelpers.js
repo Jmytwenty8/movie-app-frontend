@@ -85,3 +85,10 @@ export const getAllWishlistByUser = async () => {
   });
   return response.data.data;
 };
+
+export const getAllReviewsByUser = async () => {
+  const response = await axios.get(baseUrl + "/api/review/", {
+    withCredentials: true,
+  });
+  return response.data.data;
+};

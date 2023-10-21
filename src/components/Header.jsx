@@ -133,6 +133,25 @@ const Header = () => {
                   My Bookings
                 </MenuItem>
               )}
+              {isLoggedIn && user && user.role === "admin" ? (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/allreviews");
+                  }}
+                >
+                  All Reviews
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/reviews");
+                  }}
+                >
+                  My Reviews
+                </MenuItem>
+              )}
               {isLoggedIn && user && user.role !== "admin" && (
                 <MenuItem
                   onClick={() => {
