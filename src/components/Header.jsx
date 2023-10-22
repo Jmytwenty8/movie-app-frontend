@@ -76,6 +76,7 @@ const Header = () => {
             {!isLoggedIn && (
               <Tab component={Link} to='/create' label='Sign Up' />
             )}
+            {isLoggedIn && <Tab label={"Rs. " + user.wallet} disabled />}
             {isLoggedIn && (
               <Tab
                 label={

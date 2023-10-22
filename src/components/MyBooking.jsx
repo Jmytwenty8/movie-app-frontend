@@ -11,10 +11,17 @@ import { baseUrl } from "../main";
 import axios from "axios";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../Store";
 
 dayjs.extend(isSameOrAfter);
 
 const MyBooking = () => {
+  let user = useSelector((state) => state.user.currentUser);
+  if (user && typeof user === "string") {
+    user = JSON.parse(user);
+  }
+  const dispatch = useDispatch();
   const [bookingData, setBookingData] = useState([]);
   const f = new Intl.ListFormat("en-us", { style: "short" });
 
@@ -28,6 +35,10 @@ const MyBooking = () => {
         { withCredentials: true }
       );
       if (response.status === 200 || response.status === 201) {
+        const userDetails = await axios.post(baseUrl + "/api/user/getUser", {
+          email: user.email,
+        });
+        dispatch(userActions.updateWallet(userDetails.data.data.wallet));
         navigate("/success", { state: { data: response.data } });
       }
     } catch (err) {

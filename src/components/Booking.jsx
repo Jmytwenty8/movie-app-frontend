@@ -8,8 +8,15 @@ import { Stack, Button, Box, Card, Grid } from "@mui/material";
 import { getTheaterById } from "../helpers/apiHelpers";
 import TheaterScreen from "./TheaterScreen";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../Store";
 
 const Booking = () => {
+  let user = useSelector((state) => state.user.currentUser);
+  if (user && typeof user === "string") {
+    user = JSON.parse(user);
+  }
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
@@ -17,7 +24,6 @@ const Booking = () => {
   const [theaterData, setTheaterData] = useState({});
   const [allSeats, setAllSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  console.log(data);
 
   const getVacantSeats = async () => {
     let seats = await axios.post(baseUrl + "/api/booking/vacantseats", data, {
@@ -76,6 +82,10 @@ const Booking = () => {
         withCredentials: true,
       });
       if (response.status === 200) {
+        const userDetails = await axios.post(baseUrl + "/api/user/getUser", {
+          email: user.email,
+        });
+        dispatch(userActions.updateWallet(userDetails.data.data.wallet));
         const review = await axios.post(
           baseUrl + "/api/review/create",
           {

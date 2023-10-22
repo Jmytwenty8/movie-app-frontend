@@ -14,6 +14,14 @@ const userSlice = createSlice({
       state.currentUser = null;
       localStorage.removeItem("user");
     },
+    updateWallet: (state, action) => {
+      state.currentUser.wallet = action.payload;
+    },
+  },
+  extraReducers: {
+    updateWallet: (state, action) => {
+      localStorage.setItem("user", JSON.stringify(state));
+    },
   },
 });
 
