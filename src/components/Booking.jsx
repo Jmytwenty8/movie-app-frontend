@@ -99,6 +99,10 @@ const Booking = () => {
         navigate("/movieSuccess", { state: { data } });
       }
     } catch (err) {
+      if (!user) {
+        navigate("/signin");
+        return;
+      }
       navigate("/error", { state: { error: err.response.data.message } });
     }
   };
