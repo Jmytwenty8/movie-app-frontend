@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Typography, Card, TextField, Button, Stack } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";

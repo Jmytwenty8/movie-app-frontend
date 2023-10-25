@@ -34,9 +34,7 @@ const ListReviews = () => {
           const data = {
             ...review,
           };
-          data.reservationDate = dayjs(review.reservationDate).format(
-            "DD-MM-YYYY"
-          );
+          data.reservationDate = review.reservationDate;
           const movieDetails = await fetchMovieDetails(review.movieId);
           data.movie = movieDetails.name;
           return data;
@@ -126,7 +124,10 @@ const ListReviews = () => {
                           letterSpacing: 1,
                         }}
                       >
-                        Reservation Date : <b>{review.reservationDate}</b>
+                        Reservation Date :{" "}
+                        <b>
+                          {dayjs(review.reservationDate).format("DD-MM-YYYY")}
+                        </b>
                       </Typography>
                       <Box
                         sx={{
@@ -152,7 +153,9 @@ const ListReviews = () => {
                           }}
                           to={"/addReview"}
                           disabled={
-                            review.reservationDate > dayjs().format()
+                            dayjs(review.reservationDate).format(
+                              "DD-MM-YYYY"
+                            ) >= dayjs().format("DD-MM-YYYY")
                               ? true
                               : false
                           }
@@ -226,7 +229,10 @@ const ListReviews = () => {
                           letterSpacing: 1,
                         }}
                       >
-                        Reservation Date : <b>{review.reservationDate}</b>
+                        Reservation Date :{" "}
+                        <b>
+                          {dayjs(review.reservationDate).format("DD-MM-YYYY")}
+                        </b>
                       </Typography>
                     </Card>
                   )}
