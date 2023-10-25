@@ -76,6 +76,7 @@ const Header = () => {
             {!isLoggedIn && (
               <Tab component={Link} to='/create' label='Sign Up' />
             )}
+            {isLoggedIn && <Tab label={"Rs. " + user.wallet} disabled />}
             {isLoggedIn && (
               <Tab
                 label={
@@ -114,33 +115,93 @@ const Header = () => {
               >
                 Profile
               </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setAnchorEl(null);
-                  navigate("/booked");
-                }}
-              >
-                My Bookings
-              </MenuItem>
+              {isLoggedIn && user && user.role === "admin" ? (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/allbookings");
+                  }}
+                >
+                  All Bookings
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/booked");
+                  }}
+                >
+                  My Bookings
+                </MenuItem>
+              )}
+              {isLoggedIn && user && user.role === "admin" ? (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/allreviews");
+                  }}
+                >
+                  All Reviews
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/reviews");
+                  }}
+                >
+                  My Reviews
+                </MenuItem>
+              )}
+              {isLoggedIn && user && user.role !== "admin" && (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/wishlist");
+                  }}
+                >
+                  Wishlist
+                </MenuItem>
+              )}
               {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listMovies");
+                  }}
+                >
                   Modify Movies
                 </MenuItem>
               )}
               {isLoggedIn && user && user.role === "admin" && (
                 <MenuItem
-                  onClick={handleDashboardClose}
-                  component={Link}
-                  to={"/create"}
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listUsers");
+                  }}
+                >
+                  Modify Users
+                </MenuItem>
+              )}
+              {isLoggedIn && user && user.role === "admin" && (
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listTheaters");
+                  }}
                 >
                   Modify Theaters
                 </MenuItem>
               )}
               {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>Modify Shows</MenuItem>
-              )}
-              {isLoggedIn && user && user.role === "admin" && (
-                <MenuItem onClick={handleDashboardClose}>Modify Seats</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    navigate("/listShows");
+                  }}
+                >
+                  Modify Shows
+                </MenuItem>
               )}
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>

@@ -1,44 +1,23 @@
 import { Card, Typography, Button, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getAllBookingsByUser,
-  fetchMovieDetails,
-  getTheaterById,
-  getSeatDetails,
-} from "../helpers/apiHelpers";
+import { getAllTheaters } from "../helpers/apiHelpers";
 import { baseUrl } from "../main";
 import axios from "axios";
-import dayjs from "dayjs";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../Store";
 
-dayjs.extend(isSameOrAfter);
-
-const MyBooking = () => {
-  let user = useSelector((state) => state.user.currentUser);
-  if (user && typeof user === "string") {
-    user = JSON.parse(user);
-  }
-  const dispatch = useDispatch();
-  const [bookingData, setBookingData] = useState([]);
-  const f = new Intl.ListFormat("en-us", { style: "short" });
+const ListTheaters = () => {
+  const [theaterData, setTheaterData] = useState([]);
 
   const handleCancellation = async (id) => {
     try {
       const response = await axios.post(
-        baseUrl + "/api/booking/cancel",
+        baseUrl + "/api/theater/delete",
+        { id: id },
         {
-          id: id,
-        },
-        { withCredentials: true }
+          withCredentials: true,
+        }
       );
       if (response.status === 200 || response.status === 201) {
-        const userDetails = await axios.post(baseUrl + "/api/user/getUser", {
-          email: user.email,
-        });
-        dispatch(userActions.updateWallet(userDetails.data.data.wallet));
         navigate("/success", { state: { data: response.data } });
       }
     } catch (err) {
@@ -50,45 +29,8 @@ const MyBooking = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const allBookings = await getAllBookingsByUser();
-      const resolvedData = await Promise.all(
-        allBookings
-          .filter((booking) => {
-            return dayjs(booking.reservationDate).isSameOrAfter(
-              dayjs(),
-              "date"
-            );
-          })
-          .map(async (booking) => {
-            const data = {
-              seats: [],
-            };
-
-            data.reservationDate = dayjs(booking.reservationDate).format(
-              "DD-MM-YYYY"
-            );
-            data._id = booking._id;
-            data.showtime = booking.showtime;
-            const movieDetails = await fetchMovieDetails(booking.movieId);
-            data.movie = movieDetails.name;
-            const theaterDetails = await getTheaterById(booking.theaterId);
-            data.theater = theaterDetails.name;
-            if (booking.seats) {
-              const seatNumbers = await Promise.all(
-                booking.seats.map(async (seat) => {
-                  const seatDetails = await getSeatDetails(seat);
-                  let seatNumber = "";
-                  seatNumber += seatDetails.data.data.row;
-                  seatNumber += seatDetails.data.data.column;
-                  return seatNumber;
-                })
-              );
-              data.seats = seatNumbers;
-            }
-            return data;
-          })
-      );
-      setBookingData(resolvedData);
+      const response = await getAllTheaters();
+      setTheaterData(response);
     };
     fetchData();
   }, []);
@@ -97,7 +39,47 @@ const MyBooking = () => {
 
   return (
     <>
-      {bookingData.length > 0 ? (
+      <Box
+        direction={"column"}
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <Stack>
+          <Typography
+            variant='h3'
+            align='center'
+            marginBottom={1}
+            marginTop={10}
+            marginLeft={50}
+            marginRight={50}
+          >
+            THEATERS
+          </Typography>
+          <Button
+            variant='contained'
+            onClick={() => {
+              navigate("/addTheaters");
+            }}
+            sx={{
+              bgcolor: "#2b2d42",
+              ":hover": {
+                bgcolor: "#121217",
+              },
+              color: "white",
+              marginLeft: 40,
+              marginRight: 40,
+            }}
+            size='large'
+          >
+            Add Theater
+          </Button>
+        </Stack>
+      </Box>
+      {theaterData ? (
         <Box
           direction={"column"}
           sx={{
@@ -107,26 +89,16 @@ const MyBooking = () => {
             alignContent: "center",
           }}
         >
-          <Typography
-            variant='h3'
-            align='center'
-            marginBottom={0}
-            marginTop={10}
-            marginLeft={50}
-            marginRight={50}
-          >
-            BOOKINGS
-          </Typography>
-          {bookingData.length > 0 &&
-            bookingData.map((booking) => {
+          {theaterData &&
+            theaterData.map((theater) => {
               return (
-                <Stack direction={"row"} key={booking._id}>
+                <Stack direction={"row"} key={theater._id}>
                   <Card
-                    key={booking._id}
+                    key={theater._id}
                     sx={{
                       borderRadius: 8,
                       width: `calc(1000px - (2 * 8px))`,
-                      height: `calc(290px - (2 * 8px))`,
+                      height: `calc(250px - (2 * 8px))`,
                       [`@media (max-width: 768px)`]: {
                         width: "100%",
                         height: "100vh",
@@ -148,7 +120,7 @@ const MyBooking = () => {
                         letterSpacing: 1,
                       }}
                     >
-                      Movie: <b>{booking.movie}</b>
+                      Theater: <b>{theater.name}</b>
                     </Typography>
                     <Typography
                       variant='h6'
@@ -161,12 +133,12 @@ const MyBooking = () => {
                         letterSpacing: 1,
                       }}
                     >
-                      Theater: <b>{booking.theater}</b>
+                      Location: <b>{theater.location}</b>
                     </Typography>
                     <Typography
                       variant='h6'
                       marginTop={1}
-                      marginBottom={0}
+                      marginBottom={1}
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -174,12 +146,12 @@ const MyBooking = () => {
                         letterSpacing: 1,
                       }}
                     >
-                      Reservation Date: <b>{booking.reservationDate}</b>
+                      Price: <b>{theater.price}</b>
                     </Typography>
                     <Typography
                       variant='h6'
                       marginTop={1}
-                      marginBottom={0}
+                      marginBottom={1}
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -187,21 +159,9 @@ const MyBooking = () => {
                         letterSpacing: 1,
                       }}
                     >
-                      Seats: <b>{f.format(booking.seats)}</b>
+                      Total Seating : <b>{theater.totalSeats}</b>
                     </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={0}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Showtime: <b>{booking.showtime}</b>
-                    </Typography>
+
                     <Box
                       sx={{
                         display: "flex",
@@ -211,7 +171,7 @@ const MyBooking = () => {
                     >
                       <Button
                         variant='contained'
-                        onClick={() => handleCancellation(booking._id)}
+                        onClick={() => handleCancellation(theater._id)}
                         sx={{
                           bgcolor: "#2b2d42",
                           ":hover": {
@@ -221,7 +181,7 @@ const MyBooking = () => {
                         }}
                         size='large'
                       >
-                        Cancel
+                        Delete Theater
                       </Button>
                     </Box>
                   </Card>
@@ -266,7 +226,7 @@ const MyBooking = () => {
               }}
             >
               {" "}
-              No Bookings Found
+              No Theaters Found
             </Typography>
           </Card>
         </Box>
@@ -275,4 +235,4 @@ const MyBooking = () => {
   );
 };
 
-export default MyBooking;
+export default ListTheaters;

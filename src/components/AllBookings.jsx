@@ -2,26 +2,17 @@ import { Card, Typography, Button, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  getAllBookingsByUser,
+  getAllBookings,
   fetchMovieDetails,
   getTheaterById,
   getSeatDetails,
+  getUserById,
 } from "../helpers/apiHelpers";
 import { baseUrl } from "../main";
 import axios from "axios";
 import dayjs from "dayjs";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../Store";
 
-dayjs.extend(isSameOrAfter);
-
-const MyBooking = () => {
-  let user = useSelector((state) => state.user.currentUser);
-  if (user && typeof user === "string") {
-    user = JSON.parse(user);
-  }
-  const dispatch = useDispatch();
+const AllBookings = () => {
   const [bookingData, setBookingData] = useState([]);
   const f = new Intl.ListFormat("en-us", { style: "short" });
 
@@ -35,10 +26,6 @@ const MyBooking = () => {
         { withCredentials: true }
       );
       if (response.status === 200 || response.status === 201) {
-        const userDetails = await axios.post(baseUrl + "/api/user/getUser", {
-          email: user.email,
-        });
-        dispatch(userActions.updateWallet(userDetails.data.data.wallet));
         navigate("/success", { state: { data: response.data } });
       }
     } catch (err) {
@@ -50,43 +37,37 @@ const MyBooking = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const allBookings = await getAllBookingsByUser();
+      const allBookings = await getAllBookings();
       const resolvedData = await Promise.all(
-        allBookings
-          .filter((booking) => {
-            return dayjs(booking.reservationDate).isSameOrAfter(
-              dayjs(),
-              "date"
+        allBookings.map(async (booking) => {
+          const data = {
+            seats: [],
+          };
+          data.reservationDate = dayjs(booking.reservationDate).format(
+            "DD-MM-YYYY"
+          );
+          data._id = booking._id;
+          data.showtime = booking.showtime;
+          const user = await getUserById(booking.userId);
+          data.user = user;
+          const movieDetails = await fetchMovieDetails(booking.movieId);
+          data.movie = movieDetails.name;
+          const theaterDetails = await getTheaterById(booking.theaterId);
+          data.theater = theaterDetails.name;
+          if (booking.seats) {
+            const seatNumbers = await Promise.all(
+              booking.seats.map(async (seat) => {
+                const seatDetails = await getSeatDetails(seat);
+                let seatNumber = "";
+                seatNumber += seatDetails.data.data.row;
+                seatNumber += seatDetails.data.data.column;
+                return seatNumber;
+              })
             );
-          })
-          .map(async (booking) => {
-            const data = {
-              seats: [],
-            };
-
-            data.reservationDate = dayjs(booking.reservationDate).format(
-              "DD-MM-YYYY"
-            );
-            data._id = booking._id;
-            data.showtime = booking.showtime;
-            const movieDetails = await fetchMovieDetails(booking.movieId);
-            data.movie = movieDetails.name;
-            const theaterDetails = await getTheaterById(booking.theaterId);
-            data.theater = theaterDetails.name;
-            if (booking.seats) {
-              const seatNumbers = await Promise.all(
-                booking.seats.map(async (seat) => {
-                  const seatDetails = await getSeatDetails(seat);
-                  let seatNumber = "";
-                  seatNumber += seatDetails.data.data.row;
-                  seatNumber += seatDetails.data.data.column;
-                  return seatNumber;
-                })
-              );
-              data.seats = seatNumbers;
-            }
-            return data;
-          })
+            data.seats = seatNumbers;
+          }
+          return data;
+        })
       );
       setBookingData(resolvedData);
     };
@@ -126,7 +107,7 @@ const MyBooking = () => {
                     sx={{
                       borderRadius: 8,
                       width: `calc(1000px - (2 * 8px))`,
-                      height: `calc(290px - (2 * 8px))`,
+                      height: `calc(350px - (2 * 8px))`,
                       [`@media (max-width: 768px)`]: {
                         width: "100%",
                         height: "100vh",
@@ -175,6 +156,32 @@ const MyBooking = () => {
                       }}
                     >
                       Reservation Date: <b>{booking.reservationDate}</b>
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      marginTop={1}
+                      marginBottom={0}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      Booked By: <b>{booking?.user?.name}</b>
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      marginTop={1}
+                      marginBottom={0}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      Email: <b>{booking?.user?.email}</b>
                     </Typography>
                     <Typography
                       variant='h6'
@@ -275,4 +282,4 @@ const MyBooking = () => {
   );
 };
 
-export default MyBooking;
+export default AllBookings;

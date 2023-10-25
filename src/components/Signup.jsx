@@ -105,6 +105,7 @@ const Signup = () => {
             marginRight: 10,
           }}
           label='Password'
+          type='password'
           value={emailPassword}
           onChange={(e) => {
             setEmailPassword(e.target.value);

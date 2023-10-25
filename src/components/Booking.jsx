@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { baseUrl } from "../main";
@@ -6,8 +8,15 @@ import { Stack, Button, Box, Card, Grid } from "@mui/material";
 import { getTheaterById } from "../helpers/apiHelpers";
 import TheaterScreen from "./TheaterScreen";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../Store";
 
 const Booking = () => {
+  let user = useSelector((state) => state.user.currentUser);
+  if (user && typeof user === "string") {
+    user = JSON.parse(user);
+  }
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
@@ -56,6 +65,12 @@ const Booking = () => {
   };
 
   const handleBooking = async () => {
+    if (selectedSeats.length === 0) {
+      navigate("/error", {
+        state: { error: "You have not selected any seats" },
+      });
+      return;
+    }
     const seats = selectedSeats.map((seat) => {
       let seatNumber = "";
       seatNumber = seatNumber.concat(seat.row).concat(seat.column);
@@ -67,9 +82,27 @@ const Booking = () => {
         withCredentials: true,
       });
       if (response.status === 200) {
+        const userDetails = await axios.post(baseUrl + "/api/user/getUser", {
+          email: user.email,
+        });
+        dispatch(userActions.updateWallet(userDetails.data.data.wallet));
+        const review = await axios.post(
+          baseUrl + "/api/review/create",
+          {
+            movieId: data.movieId,
+            isPending: true,
+            bookingId: response.data.data._id,
+            reservationDate: data.reservationDate,
+          },
+          { withCredentials: true }
+        );
         navigate("/movieSuccess", { state: { data } });
       }
     } catch (err) {
+      if (!user) {
+        navigate("/signin");
+        return;
+      }
       navigate("/error", { state: { error: err.response.data.message } });
     }
   };

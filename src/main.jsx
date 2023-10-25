@@ -1,6 +1,10 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import Login from "./components/Login.jsx";
 import App from "./App";
 import Signup from "./components/Signup";
@@ -16,6 +20,20 @@ import Success from "./components/Success";
 import Profile from "./components/Profile";
 import MyBooking from "./components/MyBooking";
 import Password from "./components/Password";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import AddShows from "./components/AddShows";
+import ListShows from "./components/ListShows";
+import ListMovies from "./components/ListMovies";
+import AddMovies from "./components/AddMovies";
+import ListTheaters from "./components/ListTheaters";
+import AddTheaters from "./components/AddTheaters";
+import ListUsers from "./components/ListUsers";
+import AllBookings from "./components/AllBookings";
+import ListWishlist from "./components/ListWishlist";
+import ListReviews from "./components/ListReviews";
+import AddReview from "./components/AddReview";
+import ListReviewsForAdmin from "./components/ListReviewsForAdmin";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -70,6 +88,58 @@ const appRouter = createBrowserRouter([
         path: "/updatePassword",
         element: <Password />,
       },
+      {
+        path: "/addShows",
+        element: <AddShows />,
+      },
+      {
+        path: "/listShows",
+        element: <ListShows />,
+      },
+      {
+        path: "/listMovies",
+        element: <ListMovies />,
+      },
+      {
+        path: "/addMovies",
+        element: <AddMovies />,
+      },
+      {
+        path: "/listTheaters",
+        element: <ListTheaters />,
+      },
+      {
+        path: "/addTheaters",
+        element: <AddTheaters />,
+      },
+      {
+        path: "/listUsers",
+        element: <ListUsers />,
+      },
+      {
+        path: "/allbookings",
+        element: <AllBookings />,
+      },
+      {
+        path: "/reviews",
+        element: <ListReviews />,
+      },
+      {
+        path: "/wishlist",
+        element: <ListWishlist />,
+      },
+      {
+        path: "/addReview",
+        element: <AddReview />,
+      },
+      {
+        path: "/allreviews",
+        element: <ListReviewsForAdmin />,
+      },
+      {
+        path: "*",
+        element: <Navigate to='/' replace />,
+      },
     ],
   },
 ]);
@@ -77,7 +147,9 @@ const appRouter = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={appRouter} />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <RouterProvider router={appRouter} />
+      </LocalizationProvider>
     </QueryClientProvider>
   </Provider>
 );
