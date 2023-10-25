@@ -18,7 +18,7 @@ const ListShows = () => {
       const response = await axios.post(
         baseUrl + "/api/show/delete",
         {
-          _id: id,
+          id: id,
         },
         { withCredentials: true }
       );
@@ -110,6 +110,9 @@ const ListShows = () => {
         >
           {showData.length > 0 &&
             showData.map((show) => {
+              const cancelShow = (showId) => () => {
+                handleCancellation(showId);
+              };
               return (
                 <Stack direction={"row"} key={show._id}>
                   <Card
@@ -202,7 +205,7 @@ const ListShows = () => {
                     >
                       <Button
                         variant='contained'
-                        onClick={() => handleCancellation(show._id)}
+                        onClick={cancelShow(show._id)}
                         sx={{
                           bgcolor: "#2b2d42",
                           ":hover": {
