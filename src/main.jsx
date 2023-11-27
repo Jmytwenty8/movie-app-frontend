@@ -34,6 +34,7 @@ import ListWishlist from "./components/ListWishlist";
 import ListReviews from "./components/ListReviews";
 import AddReview from "./components/AddReview";
 import ListReviewsForAdmin from "./components/ListReviewsForAdmin";
+import React from "react";
 
 export const baseUrl = "http://localhost:3000";
 
@@ -145,11 +146,13 @@ const appRouter = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <RouterProvider router={appRouter} />
-      </LocalizationProvider>
-    </QueryClientProvider>
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <RouterProvider router={appRouter} />
+        </LocalizationProvider>
+      </QueryClientProvider>
+    </Provider>
+  </React.StrictMode>
 );

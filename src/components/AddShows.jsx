@@ -2,11 +2,10 @@ import {
   Card,
   Stack,
   Button,
-  Select,
-  MenuItem,
   FormControl,
-  InputLabel,
   Typography,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,18 +24,28 @@ const AddShows = () => {
   const [endDate, setEndDate] = useState();
   const [movieData, setMovieData] = useState([]);
   const [theaterData, setTheaterData] = useState([]);
-
-  useEffect(() => {
-    getMovies().then((res) => {
-      setMovieData(res.data);
+  const [typedText, setTypedText] = useState({
+    movie: "",
+    theater: "",
+    showtime: "",
+  });
+  const getMovieId = (movieNameToBeSearched, movieList) => {
+    const movie = movieList.find((movie) => {
+      const normalizedMovieName = movie.name.toLowerCase();
+      const normalizedSearchTerm = movieNameToBeSearched.toLowerCase();
+      return normalizedMovieName.includes(normalizedSearchTerm);
     });
-  }, []);
+    return movie ? movie._id : null;
+  };
 
-  useEffect(() => {
-    getAllTheaters().then((res) => {
-      setTheaterData(res);
+  const getTheaterId = (theaterNameToBeSearched, theaterList) => {
+    const theater = theaterList.find((theater) => {
+      const normalizedTheaterName = theater.name.toLowerCase();
+      const normalizedSearchTerm = theaterNameToBeSearched.toLowerCase();
+      return normalizedTheaterName.includes(normalizedSearchTerm);
     });
-  }, []);
+    return theater ? theater._id : null;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -60,6 +69,18 @@ const AddShows = () => {
       });
     }
   };
+
+  useEffect(() => {
+    getMovies().then((res) => {
+      setMovieData(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    getAllTheaters().then((res) => {
+      setTheaterData(res);
+    });
+  }, []);
 
   return (
     <Card
@@ -98,22 +119,31 @@ const AddShows = () => {
               marginRight: 10,
             }}
           >
-            <InputLabel>Movies</InputLabel>
-            <Select
-              onChange={(e) => {
-                setMovieId(e.target.value);
-              }}
-              label='Movies'
-              margin={10}
-            >
-              {movieData?.map((movie) => {
-                return (
-                  <MenuItem key={movie._id} value={movie._id}>
-                    {movie.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            <Autocomplete
+              options={movieData && movieData.map((movie) => movie.name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  onChange={(e) => {
+                    const movieName = e.target.value;
+                    setTypedText((prev) => ({ ...prev, movie: movieName }));
+                    const id = getMovieId(movieName, movieData);
+                    if (id) {
+                      setMovieId(id);
+                    }
+                  }}
+                  onSelect={(e) => {
+                    const movieName = e.target.value;
+                    setTypedText((prev) => ({ ...prev, movie: movieName }));
+                    const id = getMovieId(movieName, movieData);
+                    if (id) {
+                      setMovieId(id);
+                    }
+                  }}
+                  label='Movies'
+                />
+              )}
+            />
           </FormControl>
           <FormControl
             sx={{
@@ -123,21 +153,27 @@ const AddShows = () => {
               marginRight: 10,
             }}
           >
-            <InputLabel>Theaters</InputLabel>
-            <Select
-              onChange={(e) => {
-                setTheaterId(e.target.value);
-              }}
-              label='Theaters'
-            >
-              {theaterData?.map((theater) => {
-                return (
-                  <MenuItem key={theater._id} value={theater._id}>
-                    {theater.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            <Autocomplete
+              options={
+                theaterData && theaterData.map((theater) => theater.name)
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  onChange={(e) => {
+                    setTypedText({ ...typedText, theater: e.target.value });
+                    const id = getTheaterId(e.target.value, theaterData);
+                    setTheaterId(id);
+                  }}
+                  onSelect={(e) => {
+                    setTypedText({ ...typedText, theater: e.target.value });
+                    const id = getTheaterId(e.target.value, theaterData);
+                    setTheaterId(id);
+                  }}
+                  label='Theater'
+                />
+              )}
+            />
           </FormControl>
           <FormControl
             sx={{
@@ -147,21 +183,25 @@ const AddShows = () => {
               marginRight: 10,
             }}
           >
-            <InputLabel>Showtime</InputLabel>
-            <Select
-              onChange={(e) => {
-                setShowtime(e.target.value);
-              }}
-              label='Showtime'
-            >
-              {["morning", "afternoon", "evening", "night"].map((show) => {
-                return (
-                  <MenuItem key={show} value={show}>
-                    {show.toUpperCase()}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            <Autocomplete
+              options={["morning", "afternoon", "evening", "night"].map(
+                (showtime) => showtime.toUpperCase()
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  onChange={(e) => {
+                    setTypedText({ ...typedText, showtime: e.target.value });
+                    setShowtime(e.target.value.toLowerCase());
+                  }}
+                  onSelect={(e) => {
+                    setTypedText({ ...typedText, showtime: e.target.value });
+                    setShowtime(e.target.value.toLowerCase());
+                  }}
+                  label='Showtime'
+                />
+              )}
+            />
           </FormControl>
           <DatePicker
             sx={{
@@ -172,7 +212,7 @@ const AddShows = () => {
             }}
             disablePast
             label='Start Date'
-            value={startDate}
+            value={startDate || null}
             onChange={(val) => {
               const date = dayjs(val).format();
               setStartDate(date);
@@ -187,10 +227,15 @@ const AddShows = () => {
             }}
             label='End Date'
             disablePast
-            value={endDate}
+            value={endDate || null}
             onChange={(val) => {
               const date = dayjs(val).format();
               setEndDate(date);
+            }}
+            shouldDisableDate={(date) => {
+              return startDate
+                ? dayjs(date).isBefore(dayjs(startDate), "day")
+                : false;
             }}
           />
           <Button
