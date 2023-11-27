@@ -90,6 +90,7 @@ const Profile = () => {
           }}
           label='Email'
           value={emailId}
+          disabled
           onChange={(e) => {
             setEmailId(e.target.value);
           }}
