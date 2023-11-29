@@ -1,5 +1,11 @@
 import MovieCard from "./MovieCard";
-import { Box, Autocomplete, TextField, InputAdornment } from "@mui/material";
+import {
+  Box,
+  Autocomplete,
+  TextField,
+  InputAdornment,
+  Pagination,
+} from "@mui/material";
 import SearchSharp from "@mui/icons-material/SearchSharp";
 import { useState, useEffect } from "react";
 import { getMovies } from "../helpers/apiHelpers";
@@ -14,6 +20,9 @@ const Homepage = () => {
   const [movieList, setMovieList] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredMovie, setFilteredMovie] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
   useEffect(() => {
     const data = async () => {
       const response = await getMovies();
@@ -26,6 +35,17 @@ const Homepage = () => {
     const filteredData = filterData(searchText, movieList);
     setFilteredMovie(filteredData);
   }, [searchText, movieList]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMovies =
+    filteredMovie.length > 0
+      ? filteredMovie.slice(startIndex, endIndex)
+      : movieList.slice(startIndex, endIndex);
   return (
     <Box width={"100%"} margin={"auto"} marginTop={5} height={"100%"}>
       <Box width={"50%"} margin={"auto"} height={"30%"}>
@@ -73,9 +93,32 @@ const Homepage = () => {
         alignItems='center'
         flexWrap='wrap'
       >
-        {(!filteredMovie ? movieList : filteredMovie).map((movie) => {
-          return <MovieCard {...movie} key={movie._id} />;
-        })}
+        {currentMovies.map((movie) => (
+          <MovieCard {...movie} key={movie._id} />
+        ))}
+      </Box>
+      <Box
+        textAlign='center'
+        marginTop={3}
+        display='flex'
+        justifyContent='center'
+      >
+        {filteredMovie.length > 0 && (
+          <Pagination
+            count={Math.ceil(filteredMovie.length / itemsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color='primary'
+          />
+        )}
+        {filteredMovie.length === 0 && (
+          <Pagination
+            count={Math.ceil(movieList.length / itemsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color='primary'
+          />
+        )}
       </Box>
     </Box>
   );
