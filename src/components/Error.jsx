@@ -12,26 +12,31 @@ const Error = () => {
       sx={{
         borderRadius: 8,
         width: `calc(1000px - (2 * 8px))`,
-        height: `calc(250px - (2 * 8px))`,
+        height: "auto",
+        minHeight: 250,
         [`@media (max-width: 768px)`]: {
           width: "100%",
-          height: "100vh",
         },
         margin: 60,
         marginTop: 5,
         ":hover": {
           boxShadow: "10px 10px 20px #ccc",
         },
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Typography
         variant='h4'
-        marginTop={5}
-        marginBottom={1}
         sx={{
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
+          wordWrap: "break-word",
+          alignItems: "center",
+          textAlign: "center",
         }}
       >
         {Array.isArray(data) ? data[0]?.toUpperCase() : data?.toUpperCase()}

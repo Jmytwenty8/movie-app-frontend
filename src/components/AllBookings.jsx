@@ -1,4 +1,4 @@
-import { Card, Typography, Button, Box, Stack } from "@mui/material";
+import { Card, Typography, Button, Box, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,10 +11,37 @@ import {
 import { baseUrl } from "../main";
 import axios from "axios";
 import dayjs from "dayjs";
+import Table from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
+import { styled } from "@mui/material/styles";
 
 const AllBookings = () => {
   const [bookingData, setBookingData] = useState([]);
-  const f = new Intl.ListFormat("en-us", { style: "short" });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setPage(0);
+  };
 
   const handleCancellation = async (id) => {
     try {
@@ -34,6 +61,21 @@ const AllBookings = () => {
       });
     }
   };
+
+  const columns = [
+    { id: "movie", label: "Movie", minWidth: 100, align: "left" },
+    { id: "theater", label: "Theater", minWidth: 100, align: "center" },
+    {
+      id: "reservationDate",
+      label: "Reservation Date",
+      minWidth: 100,
+      align: "center",
+    },
+    { id: "user", label: "User", minWidth: 100, align: "center" },
+    { id: "email", label: "Email", minWidth: 100, align: "center" },
+    { id: "showtime", label: "Showtime", minWidth: 100, align: "center" },
+    { id: "seats", label: "Seats", minWidth: 100, align: "left" },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,168 +116,135 @@ const AllBookings = () => {
     fetchData();
   }, []);
 
-  const navigate = useNavigate();
-
   return (
     <>
       {bookingData.length > 0 ? (
-        <Box
-          direction={"column"}
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <Typography
-            variant='h3'
-            align='center'
-            marginBottom={0}
-            marginTop={10}
-            marginLeft={50}
-            marginRight={50}
-          >
-            BOOKINGS
-          </Typography>
-          {bookingData.length > 0 &&
-            bookingData.map((booking) => {
-              return (
-                <Stack direction={"row"} key={booking._id}>
-                  <Card
-                    key={booking._id}
-                    sx={{
-                      borderRadius: 8,
-                      width: `calc(1000px - (2 * 8px))`,
-                      height: `calc(350px - (2 * 8px))`,
-                      [`@media (max-width: 768px)`]: {
-                        width: "100%",
-                        height: "100vh",
-                      },
-                      marginTop: 5,
-                      ":hover": {
-                        boxShadow: "10px 10px 20px #ccc",
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant='h6'
-                      marginTop={2}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Movie: <b>{booking.movie}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Theater: <b>{booking.theater}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Reservation Date: <b>{booking.reservationDate}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Booked By: <b>{booking?.user?.name}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Email: <b>{booking?.user?.email}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Seats: <b>{f.format(booking.seats)}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={0}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Showtime: <b>{booking.showtime}</b>
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                      }}
-                    >
-                      <Button
-                        variant='contained'
-                        onClick={() => handleCancellation(booking._id)}
-                        sx={{
-                          bgcolor: "#2b2d42",
-                          ":hover": {
-                            bgcolor: "#121217",
-                          },
-                          color: "white",
+        <>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <TextField
+              id='search'
+              label='Search Bookings'
+              variant='outlined'
+              margin='normal'
+              fullWidth
+              sx={{ width: "100%", maxWidth: "800px" }}
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Box>
+          <Paper sx={{ width: "100%", overflow: "hidden" }}>
+            <TableContainer sx={{ maxHeight: 800, marginTop: 5 }}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{
+                          minWidth: column.minWidth,
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                          padding: "10px",
                         }}
-                        size='large'
                       >
-                        Cancel
-                      </Button>
-                    </Box>
-                  </Card>
-                </Stack>
-              );
-            })}
-        </Box>
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {bookingData
+                    .filter((row) =>
+                      columns.some((column) => {
+                        switch (column.id) {
+                          case "user":
+                            return (
+                              row.user.name
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase()) ||
+                              row.user.email
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
+                            );
+                          case "email":
+                            return row.user.email
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase());
+                          case "seats":
+                            return row.seats.some((seat) =>
+                              seat
+                                .toString()
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
+                            );
+                          default:
+                            return row[column.id]
+                              .toString()
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase());
+                        }
+                      })
+                    )
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      return (
+                        <StyledTableRow
+                          hover
+                          role='checkbox'
+                          tabIndex={-1}
+                          key={row._id}
+                        >
+                          {columns.map((column) => {
+                            let value;
+                            if (column.id === "user") {
+                              value = row.user.name;
+                            } else if (column.id === "email") {
+                              value = row.user.email;
+                            } else if (column.id === "seats") {
+                              value = row.seats.join(",");
+                            } else {
+                              value = row[column.id];
+                            }
+
+                            return (
+                              <StyledTableCell
+                                key={column.id}
+                                align={column.align}
+                              >
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </StyledTableCell>
+                            );
+                          })}
+                          <StyledTableCell>
+                            <Button
+                              variant='contained'
+                              color='error'
+                              onClick={() => handleCancellation(row._id)}
+                            >
+                              Cancel
+                            </Button>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component='div'
+              count={bookingData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </>
       ) : (
         <Box
           direction={"column"}
@@ -281,5 +290,24 @@ const AllBookings = () => {
     </>
   );
 };
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 export default AllBookings;
