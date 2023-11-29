@@ -1,12 +1,39 @@
-import { Card, Typography, Button, Box, Stack } from "@mui/material";
+import { Card, Typography, Button, Box, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../helpers/apiHelpers";
 import { baseUrl } from "../main";
 import axios from "axios";
+import Table from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
+import { styled } from "@mui/material/styles";
 
 const ListUsers = () => {
   const [usersData, setUsersData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setPage(0);
+  };
 
   const handleCancellation = async (id) => {
     try {
@@ -27,6 +54,19 @@ const ListUsers = () => {
     }
   };
 
+  const columns = [
+    { id: "name", label: "Name", minWidth: 100, align: "center" },
+    { id: "email", label: "Email", minWidth: 100, align: "center" },
+    {
+      id: "number",
+      label: "Number",
+      minWidth: 100,
+      align: "center",
+    },
+    { id: "role", label: "Role", minWidth: 100, align: "center" },
+    { id: "wallet", label: "Wallet", minWidth: 100, align: "center" },
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getAllUsers();
@@ -34,8 +74,6 @@ const ListUsers = () => {
     };
     fetchData();
   }, []);
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -61,129 +99,101 @@ const ListUsers = () => {
           </Typography>
         </Stack>
       </Box>
-      {usersData ? (
-        <Box
-          direction={"column"}
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          {usersData &&
-            usersData.map((user) => {
-              return (
-                <Stack direction={"row"} key={user._id}>
-                  <Card
-                    key={user._id}
-                    sx={{
-                      borderRadius: 8,
-                      width: `calc(1000px - (2 * 8px))`,
-                      height: `calc(300px - (2 * 8px))`,
-                      [`@media (max-width: 768px)`]: {
-                        width: "100%",
-                        height: "100vh",
-                      },
-                      marginTop: 5,
-                      ":hover": {
-                        boxShadow: "10px 10px 20px #ccc",
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant='h6'
-                      marginTop={2}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Name: <b>{user.name}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={0}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Email: <b>{user.email}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={1}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Number: <b>{user.number}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={1}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Role: <b>{user.role}</b>
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      marginTop={1}
-                      marginBottom={1}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Wallet: <b>{user.wallet}</b>
-                    </Typography>
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                      }}
-                    >
-                      <Button
-                        variant='contained'
-                        onClick={() => handleCancellation(user._id)}
-                        sx={{
-                          bgcolor: "#2b2d42",
-                          ":hover": {
-                            bgcolor: "#121217",
-                          },
-                          color: "white",
-                        }}
-                        size='large'
-                      >
-                        Delete User
-                      </Button>
-                    </Box>
-                  </Card>
-                </Stack>
-              );
-            })}
+      <>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <TextField
+            id='search'
+            label='Search Users'
+            variant='outlined'
+            margin='normal'
+            fullWidth
+            sx={{ width: "100%", maxWidth: "800px" }}
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
         </Box>
+      </>
+      {usersData.length > 0 ? (
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer sx={{ maxHeight: 440, marginTop: 2 }}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{
+                        minWidth: column.minWidth,
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        padding: "10px",
+                      }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {usersData
+                  .filter((row) =>
+                    columns.some((column) => {
+                      return row[column.id]
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase());
+                    })
+                  )
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <StyledTableRow
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                        key={row._id}
+                      >
+                        {columns.map((column) => {
+                          let value = row[column.id];
+
+                          return (
+                            <StyledTableCell
+                              key={column.id}
+                              align={column.align}
+                            >
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </StyledTableCell>
+                          );
+                        })}
+                        <StyledTableCell>
+                          <Button
+                            variant='contained'
+                            color='error'
+                            onClick={() => handleCancellation(row._id)}
+                          >
+                            Remove
+                          </Button>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component='div'
+            count={usersData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
       ) : (
         <Box
           direction={"column"}
@@ -229,5 +239,24 @@ const ListUsers = () => {
     </>
   );
 };
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 export default ListUsers;
