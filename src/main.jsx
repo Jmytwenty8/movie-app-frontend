@@ -34,6 +34,7 @@ import ListWishlist from "./components/ListWishlist";
 import ListReviews from "./components/ListReviews";
 import AddReview from "./components/AddReview";
 import ListReviewsForAdmin from "./components/ListReviewsForAdmin";
+import ForgetPassword from "./components/ForgetPassword";
 import React from "react";
 
 export const baseUrl = "http://localhost:3000";
@@ -52,6 +53,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/",
         element: <Homepage />,
+      },
+      {
+        path: "/user/:id",
+        element: <ForgetPassword />,
       },
       {
         path: "/create",

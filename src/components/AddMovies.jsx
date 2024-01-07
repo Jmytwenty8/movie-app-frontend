@@ -59,7 +59,7 @@ const AddMovies = () => {
       sx={{
         borderRadius: 10,
         width: `calc(800px - (2 * 16px))`,
-        height: `calc(700px - (2 * 16px))`,
+        height: `calc(800px - (2 * 16px))`,
         display: "block",
         margin: "0 auto",
         marginTop: 10,
@@ -69,108 +69,104 @@ const AddMovies = () => {
       }}
     >
       <form onSubmit={handleSubmit}>
-        <Typography
-          variant='h4'
+        <Typography variant='h3' align='center' marginTop={10}>
+          Movie
+        </Typography>
+        <TextField
           sx={{
             display: "flex",
-            justifyContent: "center",
-            marginTop: 5,
+            marginTop: 2,
             marginLeft: 10,
             marginRight: 10,
           }}
-        >
-          {" "}
-          MOVIE
-        </Typography>
-        <Stack direction={"column"}>
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Movie Name'
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Movie Description'
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='IMDB'
-            value={imdb}
-            type='number'
-            onChange={(e) => {
-              setImdb(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Runtime'
-            value={runtime}
-            helperText={onFocusRuntime ? "Enter Length in minutes" : ""}
-            onFocus={handleOnFocusRuntime}
-            type='number'
-            onBlur={handleOnBlurRuntime}
-            onChange={(e) => {
-              setRuntime(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Actors'
-            helperText={
-              onFocusActor ? "Please enter actors separated by comma(,)" : ""
-            }
-            onFocus={handleOnFocusActor}
-            onBlur={handleOnBlurActor}
-            value={actors}
-            onChange={(e) => {
-              setActors(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{
-              display: "flex",
-              marginTop: 2,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-            label='Image URL'
-            value={imageUrl}
-            onChange={(e) => {
-              setImageUrl(e.target.value);
-            }}
-          />
+          label='Movie Name'
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Movie Description'
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='IMDB'
+          value={imdb}
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*",
+          }}
+          onChange={(e) => {
+            setImdb(e.target.value);
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Runtime'
+          value={runtime}
+          helperText={onFocusRuntime ? "Enter Length in minutes" : ""}
+          onFocus={handleOnFocusRuntime}
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*",
+          }}
+          onBlur={handleOnBlurRuntime}
+          onChange={(e) => {
+            setRuntime(e.target.value);
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Actors'
+          helperText={
+            onFocusActor ? "Please enter actors separated by comma(,)" : ""
+          }
+          onFocus={handleOnFocusActor}
+          onBlur={handleOnBlurActor}
+          value={actors}
+          onChange={(e) => {
+            setActors(e.target.value);
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 2,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Image URL'
+          value={imageUrl}
+          onChange={(e) => {
+            setImageUrl(e.target.value);
+          }}
+        />
+        <Stack textAlign='center' direction={"row"} display={"block"}>
           <Button
             type='submit'
             variant='contained'

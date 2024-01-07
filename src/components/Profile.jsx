@@ -6,6 +6,7 @@ import { baseUrl } from "../main";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../Store";
+import { MuiTelInput } from "mui-tel-input";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -95,18 +96,20 @@ const Profile = () => {
             setEmailId(e.target.value);
           }}
         />
-        <TextField
+        <MuiTelInput
           sx={{
             display: "flex",
             marginTop: 5,
             marginLeft: 10,
             marginRight: 10,
           }}
-          label='Number'
           value={number}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-          onChange={(e) => {
-            setNumber(e.target.value);
+          defaultCountry={"IN"}
+          onlyCountries={["IN"]}
+          disableFormatting
+          forceCallingCode
+          onChange={(value) => {
+            setNumber(value);
           }}
         />
         <TextField

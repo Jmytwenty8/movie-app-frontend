@@ -1,14 +1,25 @@
-import { Typography, Card, TextField, Button, Stack } from "@mui/material";
+import {
+  Typography,
+  Card,
+  TextField,
+  Button,
+  Stack,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../main";
 import { useNavigate } from "react-router-dom";
+import { GoEye, GoEyeClosed } from "react-icons/go";
+import { MuiTelInput } from "mui-tel-input";
 
 const Signup = () => {
   const [emailId, setEmailId] = useState("");
   const [emailPassword, setEmailPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+  const [number, setNumber] = useState("+91");
   const [wallet, setWallet] = useState("");
 
   const navigator = useNavigate();
@@ -105,13 +116,30 @@ const Signup = () => {
             marginRight: 10,
           }}
           label='Password'
-          type='password'
           value={emailPassword}
+          type={showPassword ? "text" : "password"}
           onChange={(e) => {
             setEmailPassword(e.target.value);
           }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={(event) => event.preventDefault()}
+                  edge='end'
+                >
+                  {showPassword ? (
+                    <GoEyeClosed fontSize='medium' />
+                  ) : (
+                    <GoEye fontSize='medium' />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <TextField
+        {/* <TextField
           sx={{
             display: "flex",
             marginTop: 5,
@@ -123,6 +151,22 @@ const Signup = () => {
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
           onChange={(e) => {
             setNumber(e.target.value);
+          }}
+        /> */}
+        <MuiTelInput
+          sx={{
+            display: "flex",
+            marginTop: 5,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          value={number}
+          defaultCountry={"IN"}
+          onlyCountries={["IN"]}
+          disableFormatting
+          forceCallingCode
+          onChange={(value) => {
+            setNumber(value);
           }}
         />
         <TextField

@@ -10,7 +10,7 @@ const AddTheaters = () => {
   const [name, setName] = useState();
   const [location, setLocation] = useState();
   const [price, setPrice] = useState();
-  const [totalSeats, setTotalSeats] = useState();
+  const [totalSeats, setTotalSeats] = useState(25);
   const [onFocus, setOnFocus] = useState(false);
 
   const handleOnFocus = () => {
@@ -107,7 +107,10 @@ const AddTheaters = () => {
             }}
             label='Price'
             value={price}
-            type='number'
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
             onChange={(e) => {
               setPrice(e.target.value);
             }}
@@ -121,9 +124,13 @@ const AddTheaters = () => {
             }}
             label='Total Seats'
             value={totalSeats}
+            disabled
             helperText={onFocus ? "Keep 25 as of right now" : ""}
             onFocus={handleOnFocus}
-            type='number'
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
             onBlur={handleOnBlur}
             onChange={(e) => {
               setTotalSeats(e.target.value);

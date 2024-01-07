@@ -48,7 +48,7 @@ const ListReviewsForAdmin = () => {
       minWidth: 100,
       align: "center",
     },
-    { id: "email", label: "email", minWidth: 100, align: "center" },
+    { id: "email", label: "Email", minWidth: 100, align: "center" },
     {
       id: "isPending",
       label: "Review Pending",

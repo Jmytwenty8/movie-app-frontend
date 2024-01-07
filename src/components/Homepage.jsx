@@ -21,7 +21,7 @@ const Homepage = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredMovie, setFilteredMovie] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     const data = async () => {

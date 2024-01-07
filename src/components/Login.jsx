@@ -1,20 +1,41 @@
-import { Typography, Card, TextField, Button, Stack } from "@mui/material";
+import {
+  Typography,
+  Card,
+  TextField,
+  Button,
+  Stack,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../main";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userActions } from "../Store";
+import { GoEye, GoEyeClosed } from "react-icons/go";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
   const [emailId, setEmailId] = useState("");
   const [emailPassword, setEmailPassword] = useState("");
   const navigator = useNavigate();
 
-  const handleReset = () => {
-    setEmailId("");
-    setEmailPassword("");
+  const handleForgetPassword = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(baseUrl + "/api/user/forget", {
+        email: emailId,
+      });
+      if (response.status === 200) {
+        navigator("/success", { state: { data: response.data } });
+      }
+    } catch (err) {
+      navigator("/error", {
+        state: { error: err.response.data.message },
+      });
+    }
   };
 
   return (
@@ -36,7 +57,6 @@ const Login = () => {
       }}
     >
       <form
-        onReset={handleReset}
         onSubmit={async (event) => {
           event.preventDefault();
           try {
@@ -86,9 +106,26 @@ const Login = () => {
           }}
           label='Password'
           value={emailPassword}
-          type='password'
+          type={showPassword ? "text" : "password"}
           onChange={(e) => {
             setEmailPassword(e.target.value);
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={(event) => event.preventDefault()}
+                  edge='end'
+                >
+                  {showPassword ? (
+                    <GoEyeClosed fontSize='medium' />
+                  ) : (
+                    <GoEye fontSize='medium' />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
           }}
         />
         <Stack textAlign='center' direction={"row"} display={"block"}>
@@ -123,8 +160,9 @@ const Login = () => {
             }}
             size='large'
             type='reset'
+            onClick={handleForgetPassword}
           >
-            Reset
+            Forget Password
           </Button>
         </Stack>
       </form>

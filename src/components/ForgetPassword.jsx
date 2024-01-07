@@ -10,18 +10,15 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import { baseUrl } from "../main";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 
-const Password = () => {
+const ForgetPassword = () => {
   const navigator = useNavigate();
+  const { id } = useParams();
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  let user = useSelector((state) => state.user.currentUser);
-  if (user && typeof user === "string") {
-    user = JSON.parse(user);
-  }
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -31,10 +28,16 @@ const Password = () => {
         });
         return;
       }
+      if (password !== confirmPassword) {
+        navigator("/error", {
+          state: { error: "Password and Confirm Password do not match" },
+        });
+        return;
+      }
       const response = await axios.post(
-        baseUrl + "/api/user/patchPassword",
+        baseUrl + "/api/user/resetPassword",
         {
-          email: user.email,
+          token: id,
           password: password,
         },
         {
@@ -66,7 +69,7 @@ const Password = () => {
     >
       <form onSubmit={handleSubmit}>
         <Typography variant='h3' align='center' marginTop={10}>
-          PASSWORD
+          RESET PASSWORD
         </Typography>
         <TextField
           sx={{
@@ -80,6 +83,37 @@ const Password = () => {
           type={showPassword ? "text" : "password"}
           onChange={(e) => {
             setPassword(e.target.value);
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={(event) => event.preventDefault()}
+                  edge='end'
+                >
+                  {showPassword ? (
+                    <GoEyeClosed fontSize='medium' />
+                  ) : (
+                    <GoEye fontSize='medium' />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          sx={{
+            display: "flex",
+            marginTop: 5,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+          label='Confirm Password'
+          value={confirmPassword}
+          type={showPassword ? "text" : "password"}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
           }}
           InputProps={{
             endAdornment: (
@@ -124,4 +158,4 @@ const Password = () => {
   );
 };
 
-export default Password;
+export default ForgetPassword;
